@@ -22,19 +22,17 @@ All indices are in hexidecimal
 	- rfi R(ResultIndex)
 - wto: Write to the output device from a register
 	- wto R(DataIndex)
-- cmp: Compares two source registers and stores it in the comparison register
-	- cmp R(AIndex) R(BIndex) R(ResultIndex)
-- bie: Branches if the most recent comparison was equal
+- bie: Branches if the given register was equal to zero
 	- bie R(SourceIndex) (Label)
-- big: Branches if the most recent comparison was greater
+- big: Branches if the given register was greater than zero
 	- big R(SourceIndex) (Label)
-- bil: Branches if the most recent comparison was less
+- bil: Branches if the given register was less than zero
 	- bil R(SourceIndex) (Label)
-- bne: Branches if the most recent comparison was not equal
+- bne: Branches if the given register was not equal to zero
 	- bne R(SourceIndex) (Label)
-- bng: Branches if the most recent comparison was not greater
+- bng: Branches if the given register was not greater than zero
 	- bng R(SourceIndex) (Label)
-- bnl: Branches if the most recent comparison was not less
+- bnl: Branches if the given register was not less than zero
 	- bnl R(SourceIndex) (Label)
 - pfs: Pushes the current line to the function stack and moves the stack pointer
 	- pfs
