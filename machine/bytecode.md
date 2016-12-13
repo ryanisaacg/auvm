@@ -44,13 +44,22 @@ All indices are in hexidecimal
 	- ior R(AIndex) R(BIndex) R(ResultIndex)
 - xor: Exclusive binary or
 	- xor R(AIndex) R(BIndex) R(ResultIndex)
+- rhd: Read from the hard disk at a given index
+	- rhd (DiskLocation) R(ResultIndex)
+- whd: Write to the hard disk at a given index
+	- whd R(ResultIndex) (DiskLocation)
 ##Constants
 Constants can be used in place of source registers, and are denoted with #
 
 ##Pointers
 Pointers are denoted with a hex string with no R or # prefix.
 
+##Registers
+Registers are denoted with an 'R'. The value of a dereferenced register is represented by R$.
+
 ##Bytecode representation
 The commands are in the order listed above, with mov = 0
-Values are 5 bytes, with the first byte indicating Register, Value, or Pointer and the next four representing the value
+
+Values are 5 bytes, with the first byte indicating Register, Register Value, Constant Value, or Pointer and the next four representing the value
+
 Pointers are unsigned 32-bit integers, Registers and Constant Values are signed 32-bit integers
