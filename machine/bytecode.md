@@ -63,3 +63,6 @@ The commands are in the order listed above, with mov = 0
 Values are 5 bytes, with the first byte indicating Register, Register Value, Constant Value, or Pointer and the next four representing the value
 
 Pointers are unsigned 32-bit integers, Registers and Constant Values are signed 32-bit integers
+
+##Branches and labels
+At assemble-time, labels are completely removed and branches locations are converted to an unsigned 4-byte integer representing the position in the bytecode chunk of the jump target.
