@@ -1,15 +1,13 @@
+#include "machine.h"
+
 #include "instructions.h"
-#include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
 
-typedef unsigned char ubyte;
-typedef char byte;
 
-FILE *disk;
-ubyte *ram, *disk_buffer;
-size_t ram_size, disk_size;
-int registers[8];
+void load_disk();
+void write_disk();
+void execute_bytecode(ubyte *data, size_t length);
+size_t execute_statement(ubyte *data, size_t length, size_t position);
 
 void load_disk() {
 	ubyte disk_copy[1024];
@@ -34,3 +32,7 @@ void write_disk() {
 	fwrite(disk_buffer, 1, disk_size, disk);
 }
 
+int main(int argc, char *argv[]) {
+	load_disk();
+	write_disk();
+}
