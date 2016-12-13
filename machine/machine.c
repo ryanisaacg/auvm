@@ -32,7 +32,7 @@ void write_disk() {
 	fwrite(disk_buffer, 1, disk_size, disk);
 }
 
-int main(int argc, char *argv[]) {
+int main() {
 	load_disk();
 	write_disk();
 }
