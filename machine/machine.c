@@ -29,3 +29,8 @@ void load_disk() {
 		}
 	}
 }
+
+void write_disk() {
+	fwrite(disk_buffer, 1, disk_size, disk);
+}
+
