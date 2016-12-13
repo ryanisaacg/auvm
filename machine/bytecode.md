@@ -53,4 +53,4 @@ Pointers are denoted with a hex string with no R or # prefix.
 ##Bytecode representation
 The commands are in the order listed above, with mov = 0
 Values are 5 bytes, with the first byte indicating Register, Value, or Pointer and the next four representing the value
-Registers and Pointers are unsigned 32-bit integers, Values are signed 32-bit integers
+Pointers are unsigned 32-bit integers, Registers and Constant Values are signed 32-bit integers
