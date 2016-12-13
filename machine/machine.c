@@ -35,6 +35,9 @@ void load_disk() {
 		free(disk_buffer);
 	}
 	disk_buffer = malloc(1024);
+	if(disk_buffer == NULL) {
+		fprintf(stderr, "Memory allocation failed in load_disk\n");
+	}
 	disk_size = 1024;
 	ubyte disk_copy[1024];
 	size_t disk_position = 0;
@@ -44,9 +47,10 @@ void load_disk() {
 			memcpy(disk_buffer + disk_position, disk_copy, 1024);
 			disk_position += 1024;
 		} else {
-			void *old = disk_buffer;
 			disk_buffer = realloc(disk_buffer, disk_size * 2);
-			free(old);
+			if(disk_buffer == NULL) {
+				fprintf(stderr, "Memory reallocation failed in load_disk\n");
+			}
 			disk_size *= 2;
 			memcpy(disk_buffer + disk_position, disk_copy, 1024);
 			disk_position += 1024;
