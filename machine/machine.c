@@ -42,10 +42,9 @@ void load_disk() {
 	ubyte disk_copy[1024];
 	size_t disk_position = 0;
 	while(!feof(disk)) {
-		fread(disk_copy, 1, 1024, disk);
-		if(disk_position + 1024 < disk_size) {
+		size_t disk_read = fread(disk_copy, 1, 1024, disk);
+		if(disk_position + disk_read < disk_size) {
 			memcpy(disk_buffer + disk_position, disk_copy, 1024);
-			disk_position += 1024;
 		} else {
 			disk_buffer = realloc(disk_buffer, disk_size * 2);
 			if(disk_buffer == NULL) {
@@ -53,8 +52,8 @@ void load_disk() {
 			}
 			disk_size *= 2;
 			memcpy(disk_buffer + disk_position, disk_copy, 1024);
-			disk_position += 1024;
 		}
+		disk_position += disk_read;
 	}
 	disk_size = disk_position;
 }
