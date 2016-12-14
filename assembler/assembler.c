@@ -1,4 +1,5 @@
 #include "instructions.h"
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -32,7 +33,6 @@ int main(int argc, char *argv[]) {
 				output_parameter(input, output);
 				next = getc(input);
 			}
-
 		}
 		fclose(input);
 		fclose(output);
@@ -148,10 +148,13 @@ void output_command(FILE *input, FILE *output) {
 	case 'x':
 		putc(XOR, output);
 		getc(input);
+		break;
 	}
-error:
-	fprintf(stderr, "Error occured during assembly.");
-	exit(-1);
+	if(false) {
+	error:
+		fprintf(stderr, "Error occured during assembly.");
+		exit(-1);
+	}
 }
 
 void output_condition(FILE *in, FILE *out) {
