@@ -109,26 +109,100 @@ void execute_bytecode(ubyte *data, size_t bytecode_length) {
 	}
 }
 
+size_t command_length(ubyte command) {
+	switch(command) {
+		case MOV:
+		case ADD:
+		case SUB:
+		case MUL:
+		case DIV:
+		case MOD:
+		case AND:
+		case IOR:
+		case XOR:
+		case CMP:
+		case EXE:
+			return 10;
+		case BRN:
+		case RFI:
+		case WTO:
+		case RHD:
+		case WHD:
+			return 5;
+	}
+}
+
+bool fulfills_condition(ubyte condition) {
+	switch(condition) {
+		case EQ:
+			return register_compare == 0;
+		case NE:
+			return register_compare != 0;
+		case GR:
+			return register_compare > 0;
+		case NG:
+			return register_compare <= 0;
+		case LS:
+			return register_compare < 0;
+		case NL:
+			return register_compare >= 0;
+	}
+}
+
+#define ASM_OPERATION(instr, op) case instr: { number a = get_value(arguments); number b = get_value(arguments + 5); \
+	set_value(arguments + 10, a op b); *new_position = position + 11; } break;
+
 void execute_statement(ubyte *data, size_t position, size_t *new_position, bool *keep_going) {
 	data += position;
 	ubyte command = data[0];
-	ubyte *arguments = data + 1;
+	ubyte condition = data[1];
+	*new_position = position + 2 + command_length(command);
 	*keep_going = true;
+	if(!fulfills_condition(condition))
+		return;
+	ubyte *arguments = data + 2;
 	switch(command) {
 		case MOV: {
 			number source = get_value(arguments);
 			set_value(arguments + 5, source);
-			*new_position = position + 11;
 		} break;
+		ASM_OPERATION(ADD, +);
+		ASM_OPERATION(SUB, -);
+		ASM_OPERATION(MUL, *);
+		ASM_OPERATION(DIV, /);
+		ASM_OPERATION(MOD, %);
 		case RFI: {
 			number input = getc(stdout);
 			set_value(arguments, input);
-			*new_position = position + 5;
 		} break;
 		case WTO: {
 			number source = get_value(arguments);
 			putc(source, stdout);
-			*new_position = position + 5;
+		} break;
+		ASM_OPERATION(AND, &);
+		ASM_OPERATION(IOR, |);
+		ASM_OPERATION(XOR, ^);
+		case CMP: {
+			number a = get_value(arguments);
+			number b = get_value(arguments + 5);
+			register_compare = a - b;
+		} break;
+		case BRN: {
+			*new_position = get_value(arguments);
+		} break;
+		case RHD: {
+			number disk_spot = get_value(arguments);
+			set_value(arguments + 5, get_number(disk_buffer + disk_spot));
+		} break;
+		case WHD: {
+			number value = get_value(arguments);
+			number disk_spot = get_value(arguments + 5);
+			memcpy(disk_buffer + disk_spot, &value, 4);
+		} break;
+		case EXE: {
+			number pointer = get_value(arguments);
+			number length = get_value(arguments + 5);
+			execute_bytecode(ram + pointer, length);
 		} break;
 	}
 }

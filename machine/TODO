@@ -1,0 +1,5 @@
+- Impelement a function stack
+- Implement PUSH/POP
+- Create a filesystem specification
+- Impelement filesystem
+- Create user-facing program and insert it into the filesystem
