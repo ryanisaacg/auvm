@@ -43,7 +43,7 @@ All indices are in hexidecimal
 - exe: Executes bytecode in memory at the given point
 	- exe R(SourceIndex) R(SourceLength)
 ##Constants
-Constants can be used in place of source registers, and are denoted with #
+Constants can be used in place of source registers, and are denoted with =
 
 ##Pointers
 Pointers are denoted with a hex string with no R or # prefix.
