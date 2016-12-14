@@ -120,6 +120,11 @@ void execute_statement(ubyte *data, size_t position, size_t *new_position, bool 
 			set_value(arguments + 5, source);
 			*new_position = position + 11;
 		} break;
+		case RFI: {
+			number input = getc(stdout);
+			set_value(arguments, input);
+			*new_position = position + 5;
+		} break;
 		case WTO: {
 			number source = get_value(arguments);
 			putc(source, stdout);
