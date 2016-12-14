@@ -10,6 +10,9 @@ clean:
 auvm.out: machine/obj/io.o machine/obj/machine.o
 	gcc machine/obj/* $(CFLAGS) -o auvm.out
 
+asm.out: assembler/assembler.c
+	gcc assembler/assembler.c $(CFLAGS) -o asm.out
+
 translator.out: tools/translator.c
 	gcc tools/translator.c $(CFLAGS) -o translator.out
 
