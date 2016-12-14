@@ -130,10 +130,13 @@ size_t command_length(ubyte command) {
 		case WHD:
 			return 5;
 	}
+	return 0;
 }
 
 bool fulfills_condition(ubyte condition) {
 	switch(condition) {
+		case UN:
+			return true;
 		case EQ:
 			return register_compare == 0;
 		case NE:
@@ -147,6 +150,7 @@ bool fulfills_condition(ubyte condition) {
 		case NL:
 			return register_compare >= 0;
 	}
+	return false;
 }
 
 #define ASM_OPERATION(instr, op) case instr: { number a = get_value(arguments); number b = get_value(arguments + 5); \

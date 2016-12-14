@@ -15,7 +15,6 @@ int main(int argc, char *argv[]) {
 	} else {
 		FILE *input = fopen(argv[1], "r");
 		FILE *output = fopen(argv[2], "w");
-		char chunk[3];
 		while(!feof(input)) {
 			output_command(input, output);
 			char next = getc(input);
@@ -27,9 +26,6 @@ int main(int argc, char *argv[]) {
 		fclose(output);
 		return 0;
 	}
-	error:
-	fprintf(stderr, "Error occured during assembly.");
-	return -1;
 }
 
 
@@ -207,21 +203,21 @@ void output_parameter(FILE *in, FILE *out) {
 		else putc(1, out);
 		int current = 32768;
 		int byte = 0;
-		byte += (current & value != 0) * 4;
+		byte += ((current & value) != 0) * 4;
 		current /= 2;
-		byte += (current & value != 0) * 2;
+		byte += ((current & value) != 0) * 2;
 		current /= 2;
-		byte += (current & value != 0);
+		byte += ((current & value) != 0);
 		current /= 2;
 		putc(byte, out);
 		while(current >= 1) {
-			byte += (current & value != 0) * 8;
+			byte += ((current & value) != 0) * 8;
 			current /= 2;
-			byte += (current & value != 0) * 4;
+			byte += ((current & value) != 0) * 4;
 			current /= 2;
-			byte += (current & value != 0) * 2;
+			byte += ((current & value) != 0) * 2;
 			current /= 2;
-			byte += (current & value != 0);
+			byte += ((current & value) != 0);
 			current /= 2;
 			putc(byte, out);
 		}		
