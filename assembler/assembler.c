@@ -19,8 +19,20 @@ int main(int argc, char *argv[]) {
 			output_command(input, output);
 			char next = getc(input);
 			if(next != ' ' && next != '\t') {
+				ungetc(next, input);
 				output_condition(input, output);
-			} 
+			} else {
+				putc(UN, output);
+			}
+			next = getc(input);
+			while(next != '\n') {
+				if(next != ' ' && next != '\t') {
+					ungetc(next, input);
+				}
+				output_parameter(input, output);
+				next = getc(input);
+			}
+
 		}
 		fclose(input);
 		fclose(output);
