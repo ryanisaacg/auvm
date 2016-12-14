@@ -15,6 +15,6 @@ typedef char byte;
 typedef int32_t number;
 
 FILE *disk;
-ubyte *ram, *disk_buffer;
-size_t disk_size;
+ubyte *ram, *disk_buffer, *bios;
+size_t disk_size, bios_size;
 number registers[8];

@@ -16,7 +16,9 @@ void set_value(ubyte *instruction, number value);
 int main() {
 	initialize_hardware();
 	load_disk();
+	execute_bytecode(bios);
 	write_disk();
+	fclose(disk);
 }
 
 void initialize_hardware() {
@@ -32,6 +34,9 @@ void initialize_hardware() {
 	}
 	disk_buffer = NULL;
 	disk_size = 0;
+	FILE* bios_file = fopen("bios", "r");
+	bios = read_file(bios_file, &bios_size);
+	fclose(bios_file);
 }
 
 void load_disk() {
