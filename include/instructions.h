@@ -11,3 +11,9 @@ enum Condition {
 };
 
 typedef enum Condition Condition;
+
+enum Type {
+	REGISTER, REGISTER_VALUE, POINTER, CONSTANT
+};
+
+typedef enum Type Type;

@@ -5,10 +5,6 @@
 #include <stdio.h>
 
 #define RAM_SIZE 1048576
-#define REGISTER 0
-#define REGISTER_VALUE 1
-#define POINTER 2
-#define CONSTANT 3
 
 typedef unsigned char ubyte;
 typedef char byte;
