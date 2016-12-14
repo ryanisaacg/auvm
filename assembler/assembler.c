@@ -8,8 +8,6 @@ void output_command(FILE *in, FILE *out);
 void output_condition(FILE *in, FILE *out);
 void output_parameter(FILE *in, FILE *out);
 
-typedef enum { COMMAND, CONDITION, REGISTER, REGISTER_VALUE, CONSTANT, POINTER } Mode;
-
 int main(int argc, char *argv[]) {
 	if(argc < 3) {
 		puts("Please enter input and output filenames.");
@@ -18,7 +16,6 @@ int main(int argc, char *argv[]) {
 		FILE *input = fopen(argv[1], "r");
 		FILE *output = fopen(argv[2], "w");
 		char chunk[3];
-		Mode mode = COMMAND;
 		while(!feof(input)) {
 			output_command(input, output);
 			char next = getc(input);
@@ -175,5 +172,58 @@ void output_condition(FILE *in, FILE *out) {
 			putc(NL, out);
 			break;
 		}
+	}
+}
+
+void output_parameter(FILE *in, FILE *out) {
+	char first = lowercase_char(getc(in));
+	if(first == 'r') {
+		char next = lowercase_char(getc(in));
+		if(next == '$') {
+			putc(REGISTER_VALUE, out);
+		} else {
+			putc(REGISTER, out);
+			ungetc(next, in);
+		}
+	} else if(first == '=') {
+		putc(CONSTANT, out);
+	} else {
+		ungetc(first, in);
+	}
+	char buffer[1024];
+	char *current = buffer;
+	char next = getc(in);
+	while(!feof(in) && next != ' ' && next != '\t' && next != '\n') {
+		*current = next;
+		current++;
+		next = getc(in);
+	}
+	*current = '\0';
+	int value = (int)strtol(buffer, NULL, 16);
+	if(value == 0) {
+		for(int i = 0; i < 4; i++) putc(0, out);
+	} else {
+		if(value > 0) putc(0, out);
+		else putc(1, out);
+		int current = 32768;
+		int byte = 0;
+		byte += (current & value != 0) * 4;
+		current /= 2;
+		byte += (current & value != 0) * 2;
+		current /= 2;
+		byte += (current & value != 0);
+		current /= 2;
+		putc(byte, out);
+		while(current >= 1) {
+			byte += (current & value != 0) * 8;
+			current /= 2;
+			byte += (current & value != 0) * 4;
+			current /= 2;
+			byte += (current & value != 0) * 2;
+			current /= 2;
+			byte += (current & value != 0);
+			current /= 2;
+			putc(byte, out);
+		}		
 	}
 }
