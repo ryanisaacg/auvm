@@ -1,3 +1,5 @@
+- Fix current issue: BIOS doesn't print 'D'
+	 - Assembler writes END command with invalid condition
 - Impelement a function stack
 - Implement PUSH/POP
 - Create a filesystem specification
