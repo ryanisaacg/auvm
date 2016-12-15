@@ -26,7 +26,7 @@ int main(int argc, char *argv[]) {
 				putc(UN, output);
 			}
 			next = getc(input);
-			while(next != '\n') {
+			while(next != '\n' && !feof(input)) {
 				if(next != ' ' && next != '\t') {
 					ungetc(next, input);
 				}
@@ -209,32 +209,15 @@ void output_parameter(FILE *in, FILE *out) {
 		current++;
 		next = getc(in);
 	}
+	ungetc(next, in);
 	*current = '\0';
 	int value = (int)strtol(buffer, NULL, 16);
 	if(value == 0) {
 		for(int i = 0; i < 4; i++) putc(0, out);
 	} else {
-		if(value > 0) putc(0, out);
-		else putc(1, out);
-		int current = 32768;
-		int byte = 0;
-		byte += ((current & value) != 0) * 4;
-		current /= 2;
-		byte += ((current & value) != 0) * 2;
-		current /= 2;
-		byte += ((current & value) != 0);
-		current /= 2;
-		putc(byte, out);
-		while(current >= 1) {
-			byte += ((current & value) != 0) * 8;
-			current /= 2;
-			byte += ((current & value) != 0) * 4;
-			current /= 2;
-			byte += ((current & value) != 0) * 2;
-			current /= 2;
-			byte += ((current & value) != 0);
-			current /= 2;
-			putc(byte, out);
-		}		
+		putc((value >> 24) & 0xff, out);
+		putc((value >> 16) & 0xff, out);
+		putc((value >> 8) & 0xff, out);
+		putc((value) & 0xff, out);
 	}
 }
