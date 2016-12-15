@@ -17,6 +17,7 @@ number get_number(ubyte *bytes);
 int main() {
 	initialize_hardware();
 	load_disk();
+	printf("%d:%d:%zu\n", RAM_SIZE, BIOS_START, bios_size);
 	memcpy(ram + BIOS_START, bios, bios_size);
 	execute_bytecode(BIOS_START);
 	write_disk();
