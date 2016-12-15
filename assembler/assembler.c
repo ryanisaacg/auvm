@@ -19,7 +19,7 @@ int main(int argc, char *argv[]) {
 		while(!feof(input)) {
 			output_command(input, output);
 			char next = getc(input);
-			if(next != ' ' && next != '\t') {
+			if(next != ' ' && next != '\t' && !feof(input)) {
 				ungetc(next, input);
 				output_condition(input, output);
 			} else {
@@ -88,6 +88,7 @@ void output_command(FILE *input, FILE *output) {
 	case 'e':
 		putc(END, output);
 		getc(input); getc(input); // eat other characters
+		break;
 	case 'i':
 		putc(IOR, output);
 		getc(input); getc(input); //eat
