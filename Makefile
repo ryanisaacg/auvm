@@ -16,6 +16,11 @@ asm.out: assembler/assembler.c
 translator.out: tools/translator.c
 	gcc tools/translator.c $(CFLAGS) -o translator.out
 
+lc.out: compiler/parser.l compiler/parser.y
+	flex -olex.c compiler/parser.l
+	bison -d -byacc compiler/parser.y
+	gcc lex.c yacc.tab.c  -Wno-implicit-function-declaration -o lc.out
+
 machine/obj/machine.o: machine/machine.c machine/machine.h machine/obj machine/obj/io.o include/instructions.h
 	gcc machine/machine.c $(CFLAGS) -c -o machine/obj/machine.o
 
