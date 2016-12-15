@@ -13,6 +13,7 @@ int main() {
 	initialize_hardware();
 	load_disk();
 	write_disk();
+	return 0;
 }
 
 void initialize_hardware() {
