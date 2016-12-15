@@ -3,3 +3,7 @@ asm.*
 machine/obj/*
 bios
 translator.out
+lex.c
+yacc.tab.c
+yacc.tab.h
+lc.out
