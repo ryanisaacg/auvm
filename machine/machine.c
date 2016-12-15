@@ -8,8 +8,8 @@
 void initialize_hardware();
 void load_disk();
 void write_disk();
-void execute_bytecode(ubyte *data, size_t bytecode_length);
-void execute_statement(ubyte *data, size_t position, size_t *new_position, bool *keep_going);
+void execute_bytecode(size_t start);
+void execute_statement(size_t position, size_t *new_position, bool *keep_going);
 number get_value(ubyte *instruction);
 void set_value(ubyte *instruction, number value);
 number get_number(ubyte *bytes);
@@ -17,7 +17,8 @@ number get_number(ubyte *bytes);
 int main() {
 	initialize_hardware();
 	load_disk();
-	execute_bytecode(bios, bios_size);
+	memcpy(ram + BIOS_START, bios, bios_size);
+	execute_bytecode(BIOS_START);
 	write_disk();
 	fclose(disk);
 	return 0;
@@ -103,11 +104,11 @@ void set_value(ubyte *instruction, int value) {
 	}
 }
 
-void execute_bytecode(ubyte *data, size_t bytecode_length) {
-	size_t i = 0;
+void execute_bytecode(size_t start_position) {
+	size_t i = start_position;
 	bool keep_going = true;
-	while(i < bytecode_length && keep_going) {
-		execute_statement(data, i, &i, &keep_going);
+	while(keep_going) {
+		execute_statement(i, &i, &keep_going);
 	}
 }
 
@@ -123,7 +124,6 @@ size_t command_length(ubyte command) {
 		case IOR:
 		case XOR:
 		case CMP:
-		case EXE:
 			return 10;
 		case BRN:
 		case RFI:
@@ -158,8 +158,8 @@ bool fulfills_condition(ubyte condition) {
 #define ASM_OPERATION(instr, op) case instr: { number a = get_value(arguments); number b = get_value(arguments + 5); \
 	set_value(arguments + 10, a op b); *new_position = position + 11; } break;
 
-void execute_statement(ubyte *data, size_t position, size_t *new_position, bool *keep_going) {
-	data += position;
+void execute_statement(size_t position, size_t *new_position, bool *keep_going) {
+	ubyte *data = ram + position;
 	ubyte command = data[0];
 	ubyte condition = data[1];
 	*new_position = position + 2 + command_length(command);
@@ -205,10 +205,8 @@ void execute_statement(ubyte *data, size_t position, size_t *new_position, bool 
 			number disk_spot = get_value(arguments + 5);
 			memcpy(disk_buffer + disk_spot, &value, 4);
 		} break;
-		case EXE: {
-			number pointer = get_value(arguments);
-			number length = get_value(arguments + 5);
-			execute_bytecode(ram + pointer, length);
+		case END: {
+			*keep_going = false;
 		} break;
 	}
 }

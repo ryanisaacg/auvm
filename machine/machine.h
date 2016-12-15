@@ -4,7 +4,10 @@
 #include <stdint.h>
 #include <stdio.h>
 
-#define RAM_SIZE 1048576
+#define RAM_SIZE (1024 * 1024 * 10)
+#define STACK_START 0
+#define STACK_SIZE (1024 * 1024)
+#define BIOS_START (1024 * 1024)
 
 typedef unsigned char ubyte;
 typedef char byte;
