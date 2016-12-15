@@ -86,9 +86,8 @@ void output_command(FILE *input, FILE *output) {
 		getc(input); getc(input); // eat other characters
 		break;
 	case 'e':
-		putc(EXE, output);
+		putc(END, output);
 		getc(input); getc(input); // eat other characters
-		break;
 	case 'i':
 		putc(IOR, output);
 		getc(input); getc(input); //eat
