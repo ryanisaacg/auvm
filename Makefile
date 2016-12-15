@@ -1,4 +1,4 @@
-CFLAGS= -Wall -Wextra -Werror -Wfatal-errors -Iinclude -g
+CFLAGS= -Wall -Wextra -Werror -Wfatal-errors -Iinclude -g -std=c99
 
 run: auvm.out
 	./auvm.out
