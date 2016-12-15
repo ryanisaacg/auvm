@@ -1,3 +1,5 @@
 auvm.*
 asm.*
 machine/obj/*
+bios
+translator.out
