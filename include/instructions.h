@@ -1,7 +1,19 @@
 #pragma once
 
 enum Instruction {
-	MOV, ADD, SUB, MUL, DIV, MOD, NEG, RFI, WTO, BIE, BIL, BIG, BNE, BNL, BNG, PFS, POP, AND, IOR, XOR, RHD, WHD
+	MOV, ADD, SUB, MUL, DIV, MOD, RFI, WTO, CMP, BRN, PFS, POP, AND, IOR, XOR, RHD, WHD, EXE
 };
 
 typedef enum Instruction Instruction;
+
+enum Condition {
+	UN, EQ, GR, LS, NE, NG, NL
+};
+
+typedef enum Condition Condition;
+
+enum Type {
+	REGISTER, REGISTER_VALUE, POINTER, CONSTANT
+};
+
+typedef enum Type Type;

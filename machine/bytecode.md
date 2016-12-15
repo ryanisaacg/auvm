@@ -16,24 +16,14 @@ All indices are in hexidecimal
 	- div R(AIndex) R(BIndex) R(ResultIndex)
 - mod: Modulo two registers and store the result in another register
 	- mod R(AIndex) R(BINdex) R(ResultIndex)
-- neg: Negate a value 
-	- neg R(SourceIndex) R(ResultIndex)
 - rfi: Read from the input device and store the result in a register
 	- rfi R(ResultIndex)
 - wto: Write to the output device from a register
 	- wto R(DataIndex)
-- bie: Branches if the given register was equal to zero
-	- bie R(SourceIndex) (Label)
-- big: Branches if the given register was greater than zero
-	- big R(SourceIndex) (Label)
-- bil: Branches if the given register was less than zero
-	- bil R(SourceIndex) (Label)
-- bne: Branches if the given register was not equal to zero
-	- bne R(SourceIndex) (Label)
-- bng: Branches if the given register was not greater than zero
-	- bng R(SourceIndex) (Label)
-- bnl: Branches if the given register was not less than zero
-	- bnl R(SourceIndex) (Label)
+- cmp: Compares two values and stores the result in the comparison register
+	- cmp R(AIndex) R(BIndex)
+- brn: Branches to another location in the code
+	- brn (Label)
 - pfs: Pushes the current line to the function stack and moves the stack pointer
 	- pfs
 - pop: Pops the stack pointer, destroying all values on the stack. Returns to the last pfs call
@@ -47,9 +37,13 @@ All indices are in hexidecimal
 - rhd: Read from the hard disk at a given index
 	- rhd (DiskLocation) R(ResultIndex)
 - whd: Write to the hard disk at a given index
-	- whd R(ResultIndex) (DiskLocation)
+	- whd R(SourceIndex) (DiskLocation)
+- lbl: Defines a label (converted to index at assemble-time)
+	- lbl "(String)"
+- exe: Executes bytecode in memory at the given point
+	- exe R(SourceIndex) R(SourceLength)
 ##Constants
-Constants can be used in place of source registers, and are denoted with #
+Constants can be used in place of source registers, and are denoted with =
 
 ##Pointers
 Pointers are denoted with a hex string with no R or # prefix.
@@ -62,7 +56,20 @@ The commands are in the order listed above, with mov = 0
 
 Values are 5 bytes, with the first byte indicating Register, Register Value, Constant Value, or Pointer and the next four representing the value
 
-Pointers are unsigned 32-bit integers, Registers and Constant Values are signed 32-bit integers
+Pointers, Registers and Constant Values are signed 32-bit integers
 
 ##Branches and labels
 At assemble-time, labels are completely removed and branches locations are converted to an unsigned 4-byte integer representing the position in the bytecode chunk of the jump target.
+
+##Conditional Commands
+Commands have a byte with a condition under which they execute. The conditions are:
+
+- un: Always execute
+- eq: The last comparison was equal
+- ne: The last comparison was not equal
+- gr: The last comparison was greater
+- ng: The last comparison was not greater
+- ls: The last comparison was less
+- nl: The last comparison was not less
+
+If no conditional is present, un is implied.
