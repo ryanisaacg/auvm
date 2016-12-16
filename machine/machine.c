@@ -28,6 +28,7 @@ int main() {
 void initialize_hardware() {
 	disk = fopen("harddisk", "r+");
 	ram = malloc(RAM_SIZE);
+	memset(ram, 0, RAM_SIZE);
 	if(disk == NULL) {
 		fprintf(stderr, "Failed to initialize hard disk.");
 		exit(-1);
