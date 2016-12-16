@@ -3,6 +3,7 @@
 	#include "yacc.tab.h"
 	
 	#include <stdio.h>
+	Node *root_node;
 %}
 
 %union { char *sval; int ival; Node *nval; }
@@ -19,7 +20,7 @@
 %%
 
 root:
-	| root list { node_print($2); }
+	| root list { node_add_child(root_node, $2); }
 
 list:
 	'(' ')' { $$ = node_new_nil(); }
@@ -43,12 +44,19 @@ atom:
 extern FILE* yyin;
 
 int main(int argc, char *argv[]) {
-	if(argc < 2) {
-		puts("Please enter an input file");
+	if(argc < 3) {
+		puts("Please enter an input file and an output file.");
 	} else {
 		yyin = fopen(argv[1], "r");
+		root_node = node_new_nil();
 		yyparse();
+		FILE* out = fopen(argv[2], "w");
+		for(Node *child = root_node->child; child != NULL; child = child->next) {
+			node_output(child, out);
+			fputc('\n', out);
+		}
 		fclose(yyin);
+		fclose(out);
 	}
 	return 0;
 }
