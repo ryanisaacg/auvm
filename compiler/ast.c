@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "table.h"
 
 Node *node_new_nil() {
 	NodeData nd;
@@ -96,38 +97,68 @@ static inline void node_output_asm(Node *root, FILE *stream, char *command) {
 	}
 }
 
-#define NODE_MIRROR(str) if(strcmp(sval, str) == 0) { fputs(str, stream); break; }
+#define NODE_MIRROR(str) if(strcmp(sval, str) == 0) { fputs(str, stream); return true; }
 
-void node_output(Node *root, FILE *stream) {
-	char *sval 	= root->data.sval;
-	int ival	= root->data.ival;
-	bool space  = true;
+static bool node_asm_literal(char *sval, FILE *stream) {
+	NODE_MIRROR("mov");
+	NODE_MIRROR("add");
+	NODE_MIRROR("sub");
+	NODE_MIRROR("mul");
+	NODE_MIRROR("div");
+	NODE_MIRROR("mod");
+	NODE_MIRROR("rfi");
+	NODE_MIRROR("wto");
+	NODE_MIRROR("cmp");
+	NODE_MIRROR("brn");
+	NODE_MIRROR("pfs");
+	NODE_MIRROR("pos");
+	NODE_MIRROR("and");
+	NODE_MIRROR("ior");
+	NODE_MIRROR("xor");
+	NODE_MIRROR("rhd");
+	NODE_MIRROR("whd");
+	NODE_MIRROR("end");
+	return false;
+}
+
+static void node_to_output(Node *root, Table *table, FILE *stream) {
+	char *sval 		= root->data.sval;
+	int ival		= root->data.ival;
+	bool space  	= true;
+	bool eval_child = true;
 	switch(root->type) {
 	case WORD_NODE:
-		NODE_MIRROR("mov");
-		NODE_MIRROR("add");
-		NODE_MIRROR("sub");
-		NODE_MIRROR("mul");
-		NODE_MIRROR("div");
-		NODE_MIRROR("mod");
-		NODE_MIRROR("rfi");
-		NODE_MIRROR("wto");
-		NODE_MIRROR("cmp");
-		NODE_MIRROR("brn");
-		NODE_MIRROR("pfs");
-		NODE_MIRROR("pos");
-		NODE_MIRROR("and");
-		NODE_MIRROR("ior");
-		NODE_MIRROR("xor");
-		NODE_MIRROR("rhd");
-		NODE_MIRROR("whd");
-		NODE_MIRROR("end");
+		if(node_asm_literal(sval, stream)) break;
 		if(strcmp(sval, "const") == 0) {
 			fputc('=', stream);
 			space = false;
 			break;
+		} else if(strcmp(sval, "stack-new") == 0) {
+			fputs("\
+mov 0 R0\n\
+add R0 =1 R0\n\
+mov R0 0", stream);
+		} else if(strcmp(sval, "var-new") == 0) {
+			eval_child = false;
+			char *varname = root->child->data.sval;
+			fputs("mov 0 R0\n\
+mul R0 =1024\n\
+add R0 =1 R0\n\
+add R0 R$0 R1\n", stream);
+			Node *value = root->child->next;
+			if(value->type == WORD_NODE) {
+				int position = table_get(table, value->data.sval);
+				fprintf(stream, "add R0 =%d R2\n", position);
+				fputs("mov R$2 R$1\n", stream);
+			} else if(value->type == NUMBER_NODE) {
+				int number = value->data.ival;
+				fprintf(stream, "mov =%d R$1\n", number);
+			}
+			fputs("add R$0 =4 R3\nmov R3 R$0", stream);
+			table_add(table, varname);
+		} else {
+			fputs(sval, stream);
 		}
-		fputs(sval, stream);
 		break;
 	case NUMBER_NODE:
 		fprintf(stream, "%d", ival);
@@ -137,7 +168,11 @@ void node_output(Node *root, FILE *stream) {
 	if(space) {
 		fputc(' ', stream);
 	}
-	for(Node *child = root->child; child != NULL; child = child->next) {
+	for(Node *child = root->child; eval_child && child != NULL; child = child->next) {
 		node_output(child, stream);
 	}
+}
+
+void node_output(Node *root, FILE *stream) {
+	node_to_output(root, table_new(NULL), stream);
 }
