@@ -1,33 +1,42 @@
 %{
+	#include "ast.h"
 	#include "yacc.tab.h"
+	
 	#include <stdio.h>
 %}
 
-%union { char *sval; int ival; }
+%union { char *sval; int ival; Node *nval; }
 
 %token <sval> WORD
 %token <ival> NUMBER
-%token <sval> STRING;
+%token <sval> STRING
+
+%type <nval> atom
+%type <nval> expr
+%type <nval> members
+%type <nval> list
 
 %%
 
+root:
+	| root list { node_print($2); }
 
 list:
-	'(' ')'
-	| '(' members ')'
+	'(' ')' { $$ = node_new_nil(); }
+	| '(' members ')' { $$ = $2; }
 
 members:
 	expr
-	| members expr
+	| members expr { node_add_child($1, $2); $$ = $1; }
 
 expr:
 	atom
 	| list
 
 atom:
-	WORD { printf("%s\n", $1); }
-	| NUMBER { printf("%d\n", $1); }
-	| STRING { printf("%d\n", $1); }
+	WORD { $$ = node_new_str($1, WORD_NODE); }
+	| NUMBER { $$ = node_new_int($1, NUMBER_NODE); }
+	| STRING { $$ = node_new_str($1, STRING_NODE); }
 
 %%
 

@@ -1,6 +1,6 @@
 auvm.*
 asm.*
-machine/obj/*
+*/obj/*
 bios
 translator.out
 lex.c
