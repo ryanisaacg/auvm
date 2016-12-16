@@ -28,11 +28,12 @@ compiler/obj:
 	mkdir compiler/obj
 compiler/obj/ast.o: compiler/obj compiler/ast.h compiler/ast.c
 	gcc compiler/ast.c $(CFLAGS) -c -o compiler/obj/ast.o
-lc.out: compiler/parser.l compiler/parser.y compiler/obj/ast.o
+compiler/obj/table.o: compiler/obj compiler/table.h compiler/table.c
+	gcc compiler/table.c $(CFLAGS) -c -o compiler/obj/table.o
+lc.out: compiler/parser.l compiler/parser.y compiler/obj/ast.o compiler/obj/table.o
 	flex -olex.c compiler/parser.l
 	bison -d -byacc compiler/parser.y
-	gcc -Icompiler lex.c yacc.tab.c  -Wno-implicit-function-declaration compiler/obj/ast.o -std=c99 -o lc.out
-
+	gcc -Icompiler lex.c yacc.tab.c  -Wno-implicit-function-declaration compiler/obj/table.o compiler/obj/ast.o -std=c99 -o lc.out
 
 # Compile the VM
 auvm.out: machine/obj/io.o machine/obj/machine.o
