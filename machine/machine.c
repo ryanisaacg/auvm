@@ -157,7 +157,7 @@ bool fulfills_condition(ubyte condition) {
 }
 
 #define ASM_OPERATION(instr, op) case instr: { number a = get_value(arguments); number b = get_value(arguments + 5); \
-	set_value(arguments + 10, a op b); *new_position = position + 11; } break;
+	set_value(arguments + 10, a op b); } break;
 
 void execute_statement(size_t position, size_t *new_position, bool *keep_going) {
 	ubyte *data = ram + position;
