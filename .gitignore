@@ -2,6 +2,7 @@ auvm.*
 asm.*
 */obj/*
 bios
+bios-asm
 translator.out
 lex.c
 yacc.tab.c

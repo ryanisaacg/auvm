@@ -96,7 +96,7 @@ static inline void node_output_asm(Node *root, FILE *stream, char *command) {
 	}
 }
 
-#define NODE_MIRROR(str) if(strcmp(sval, str) == 0) { fputs(str, stream); fputc(' ', stream); break; }
+#define NODE_MIRROR(str) if(strcmp(sval, str) == 0) { fputs(str, stream); break; }
 
 void node_output(Node *root, FILE *stream) {
 	char *sval 	= root->data.sval;
