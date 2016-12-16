@@ -1,3 +1,0 @@
-(mov (const 44) R0)
-(wto R0)
-(end)
