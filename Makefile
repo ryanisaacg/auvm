@@ -31,7 +31,7 @@ compiler/obj/ast.o: compiler/obj compiler/ast.h compiler/ast.c
 lc.out: compiler/parser.l compiler/parser.y compiler/obj/ast.o
 	flex -olex.c compiler/parser.l
 	bison -d -byacc compiler/parser.y
-	gcc -Icompiler lex.c yacc.tab.c  -Wno-implicit-function-declaration compiler/obj/ast.o -o lc.out
+	gcc -Icompiler lex.c yacc.tab.c  -Wno-implicit-function-declaration compiler/obj/ast.o -std=c99 -o lc.out
 
 
 # Compile the VM
