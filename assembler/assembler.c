@@ -27,10 +27,17 @@ int main(int argc, char *argv[]) {
 			}
 			next = getc(input);
 			while(next != '\n' && !feof(input)) {
+				if(next == ' ' || next == '\t') {
+					next = getc(input);
+					continue;
+				}
 				if(next != ' ' && next != '\t') {
 					ungetc(next, input);
 				}
 				output_parameter(input, output);
+				next = getc(input);
+			}
+			while(next == ' ' || next == '\t') {
 				next = getc(input);
 			}
 		}
