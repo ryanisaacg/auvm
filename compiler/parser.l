@@ -1,4 +1,5 @@
 %{
+	#include "ast.h"
 	#include "yacc.tab.h"
 	#include <stdio.h>
 	#include <string.h>
