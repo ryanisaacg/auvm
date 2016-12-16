@@ -207,6 +207,7 @@ void output_parameter(FILE *in, FILE *out) {
 		putc(CONSTANT, out);
 	} else {
 		ungetc(first, in);
+		putc(POINTER, out);
 	}
 	char buffer[1024];
 	char *current = buffer;
