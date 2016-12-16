@@ -13,5 +13,5 @@ struct Table {
 };
 
 Table *table_new(Table *parent);
-void table_add(Table *tbl, char *name, int value);
-int *table_get(Table *tbl, char *name);
+void table_add(Table *tbl, char *name);
+int table_get(Table *tbl, char *name);
