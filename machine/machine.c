@@ -178,7 +178,7 @@ void execute_statement(size_t position, size_t *new_position, bool *keep_going) 
 		ASM_OPERATION(DIV, /);
 		ASM_OPERATION(MOD, %);
 		case RFI: {
-			number input = getc(stdout);
+			number input = getc(stdin);
 			set_value(arguments, input);
 		} break;
 		case WTO: {
