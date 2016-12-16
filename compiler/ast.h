@@ -1,5 +1,7 @@
 #pragma once
 
+#include <stdio.h>
+
 struct Node;
 typedef struct Node Node;
 
@@ -21,3 +23,5 @@ Node *node_new_int(int data, NodeType type);
 Node *node_new(NodeData data, NodeType type);
 void node_add_child(Node *parent, Node *child);
 void node_print(Node *root);
+void node_output(Node *root, FILE *stream);
+char *node_tostring(Node *node);
