@@ -118,6 +118,7 @@ static bool node_asm_literal(char *sval, FILE *stream) {
 	NODE_MIRROR("rhd");
 	NODE_MIRROR("whd");
 	NODE_MIRROR("end");
+	NODE_MIRROR("lbl");
 	return false;
 }
 

@@ -59,7 +59,7 @@ Values are 5 bytes, with the first byte indicating Register, Register Value, Con
 Pointers, Registers and Constant Values are signed 32-bit integers
 
 ##Branches and labels
-At assemble-time, labels are completely removed and branches locations are converted to an unsigned 4-byte integer representing the position in the bytecode chunk of the jump target.
+At assemble-time, labels are converted into indices at both the location of the branch and the label.
 
 ##Conditional Commands
 Commands have a byte with a condition under which they execute. The conditions are:

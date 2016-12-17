@@ -9,7 +9,7 @@ void initialize_hardware();
 void load_disk();
 void write_disk();
 void execute_bytecode(size_t start);
-void execute_statement(size_t position, size_t *new_position, bool *keep_going);
+void execute_statement(size_t start, size_t position, size_t *new_position, bool *keep_going);
 number get_value(ubyte *instruction);
 void set_value(ubyte *instruction, number value);
 number get_number(ubyte *bytes);
@@ -97,7 +97,7 @@ void execute_bytecode(size_t start_position) {
 	size_t i = start_position;
 	bool keep_going = true;
 	while(keep_going) {
-		execute_statement(i, &i, &keep_going);
+		execute_statement(start_position, i, &i, &keep_going);
 	}
 }
 
@@ -124,7 +124,7 @@ bool fulfills_condition(ubyte condition) {
 #define ASM_OPERATION(instr, op) case instr: { number a = get_value(arguments); number b = get_value(arguments + 5); \
 	set_value(arguments + 10, a op b); } break;
 
-void execute_statement(size_t position, size_t *new_position, bool *keep_going) {
+void execute_statement(size_t start, size_t position, size_t *new_position, bool *keep_going) {
 	ubyte *data = ram + position;
 	ubyte command = data[0];
 	ubyte condition = data[1];
@@ -160,7 +160,18 @@ void execute_statement(size_t position, size_t *new_position, bool *keep_going) 
 			register_compare = a - b;
 		} break;
 		case BRN: {
-			*new_position = get_value(arguments);
+			number pos = get_value(arguments);
+			size_t search = 0;
+			while(true) {
+				if(ram[start + search] == LBL) {
+					number label_pos = get_number(ram + start + search + 3);
+					if(label_pos == pos) {
+						*new_position = search;
+						break;
+					}
+				}
+				search++;
+			}
 		} break;
 		case RHD: {
 			number disk_spot = get_value(arguments);
@@ -173,6 +184,8 @@ void execute_statement(size_t position, size_t *new_position, bool *keep_going) 
 		} break;
 		case END: {
 			*keep_going = false;
+		} break;
+		case LBL: {
 		} break;
 	}
 }
