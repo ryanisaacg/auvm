@@ -3,6 +3,7 @@ CFLAGS= -Wall -Wextra -Werror -Wfatal-errors -Iinclude -g -std=c99
 all: auvm.out translator.out lc.out asm.out dasm.out
 
 run: auvm.out bios
+	./dasm.out bios bios-dasm
 	./auvm.out
 
 clean:
