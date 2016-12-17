@@ -1,6 +1,6 @@
 CFLAGS= -Wall -Wextra -Werror -Wfatal-errors -Iinclude -g -std=c99
 
-all: auvm.out translator.out lc.out asm.out
+all: auvm.out translator.out lc.out asm.out dasm.out
 
 run: auvm.out bios
 	./auvm.out
@@ -15,9 +15,11 @@ bios-asm: bios-source lc.out
 bios: bios-asm asm.out
 	./asm.out bios-asm bios
 
-#Compile the assembler
+#Compile the assembler and disassembler
 asm.out: assembler/assembler.c
 	gcc assembler/assembler.c $(CFLAGS) -o asm.out
+dasm.out: include/instructions.h assembler/disassembler.c
+	gcc assembler/disassembler.c $(CFLAGS) -o dasm.out
 
 #Compile the translator tool
 translator.out: tools/translator.c
