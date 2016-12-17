@@ -100,6 +100,10 @@ void output_command(FILE *input, FILE *output) {
 		putc(IOR, output);
 		getc(input); getc(input); //eat
 		break;
+	case 'l':
+		putc(LBL, output);
+		getc(input); getc(input); 
+		break;
 	case 'm':
 		if(next == 'o') {
 			next = getc(input);

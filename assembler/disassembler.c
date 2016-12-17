@@ -129,6 +129,9 @@ char *command_to_string(ubyte command) {
 	case END:
 		return "END";
 		break;
+	case LBL:
+		return "LBL";
+		break;
 	}
 	return "ERROR";
 }
