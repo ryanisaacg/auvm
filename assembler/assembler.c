@@ -82,27 +82,27 @@ void output_command(FILE *input, FILE *output) {
 		break;
 	case 'b':
 		putc(BRN, output);
-		getc(input); getc(input);
+		getc(input);
 		break;
 	case 'c':
 		putc(CMP, output);
-		getc(input); getc(input); //eat the other characters
+		getc(input); //eat the other characters
 		break;
 	case 'd':
 		putc(DIV, output);
-		getc(input); getc(input); // eat other characters
+		getc(input); // eat other characters
 		break;
 	case 'e':
 		putc(END, output);
-		getc(input); getc(input); // eat other characters
+		getc(input); // eat other characters
 		break;
 	case 'i':
 		putc(IOR, output);
-		getc(input); getc(input); //eat
+		getc(input); //eat
 		break;
 	case 'l':
 		putc(LBL, output);
-		getc(input); getc(input); 
+		getc(input); 
 		break;
 	case 'm':
 		if(next == 'o') {
@@ -145,7 +145,7 @@ void output_command(FILE *input, FILE *output) {
 		break;
 	case 's':
 		putc(SUB, output);
-		getc(input); getc(input);
+		getc(input);
 		break;
 	case 'w':
 		if(next == 't') {
