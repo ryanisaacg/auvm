@@ -28,6 +28,7 @@ typedef enum Type Type;
 size_t command_length(ubyte command) {
 	switch(command) {
 		case MOV:
+			return 10;
 		case ADD:
 		case SUB:
 		case MUL:
@@ -36,6 +37,7 @@ size_t command_length(ubyte command) {
 		case AND:
 		case IOR:
 		case XOR:
+			return 15;
 		case CMP:
 			return 10;
 		case BRN:
