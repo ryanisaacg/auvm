@@ -25,3 +25,25 @@ int table_get(Table *tbl, char *name) {
 	}
 	return -1;
 }
+
+FunctionTable *func_table_new() {
+	FunctionTable *ft = malloc(sizeof(FunctionTable));
+	ft->length = 0;
+	return ft;
+}
+void func_table_add(FunctionTable *ft, char *name, int label) {
+	ft->names[ft->length] = name;
+	ft->labels[ft->length] = label;
+	ft->length++;
+	if(ft->length > 1024) {
+		fputs("Added too many entries to a function table.", stderr);
+	}
+}
+int func_table_get(FunctionTable *tbl, char *name) {
+	for(size_t i = 0; i < tbl->length; i++) {
+		if(strcmp(tbl->names[i], name) == 0) {
+			return tbl->labels[i];
+		}
+	}
+	return -1;
+}
