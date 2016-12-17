@@ -14,6 +14,9 @@ bios-asm: bios-source lc.out
 	./lc.out bios-source bios-asm
 bios: bios-asm asm.out
 	./asm.out bios-asm bios
+#Disassemble the bios to examine if it has been assembled correctly
+bios-dasm: bios dasm.out
+	./dasm.out bios bios-dasm
 
 #Compile the assembler and disassembler
 asm.out: assembler/assembler.c
