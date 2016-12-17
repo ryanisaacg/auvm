@@ -1,5 +1,12 @@
 #pragma once
 
+#include <stdint.h>
+#include <stddef.h>
+
+typedef unsigned char ubyte;
+typedef char byte;
+typedef int32_t number;
+
 enum Instruction {
 	MOV, ADD, SUB, MUL, DIV, MOD, RFI, WTO, CMP, BRN, PFS, POP, AND, IOR, XOR, RHD, WHD, END
 };
@@ -17,3 +24,38 @@ enum Type {
 };
 
 typedef enum Type Type;
+
+size_t command_length(ubyte command) {
+	switch(command) {
+		case MOV:
+		case ADD:
+		case SUB:
+		case MUL:
+		case DIV:
+		case MOD:
+		case AND:
+		case IOR:
+		case XOR:
+		case CMP:
+			return 10;
+		case BRN:
+		case RFI:
+		case WTO:
+		case RHD:
+		case WHD:
+			return 5;
+	}
+	return 0;
+}
+
+number get_number(ubyte *bytes) {
+	number value = 0;
+	value += bytes[3];
+	value += bytes[2] * 16;
+	value += bytes[1] * 256;
+	value += bytes[0] % 8;
+	if(bytes[0] != 0 && bytes[0] % 8 == 0) {
+		value *= -1;
+	}
+	return value;
+}
