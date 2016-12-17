@@ -205,6 +205,7 @@ add R0 R$0 R1\n", stream);
 		} else if(strcmp(sval, "call") == 0) {
 			Node *func_name = root->child;
 			call_func(func_name->data.sval, stream);
+			eval_child = false;
 		} else {
 			fputs(sval, stream);
 		}
