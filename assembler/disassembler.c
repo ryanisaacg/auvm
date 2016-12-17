@@ -105,6 +105,12 @@ char *command_to_string(ubyte command) {
 	case BRN:
 		return "BRN";
 		break;
+	case GTB:
+		return "GTB";
+		break;
+	case GCB:
+		return "GCB";
+		break;
 	case PFS:
 		return "PFS";
 		break;

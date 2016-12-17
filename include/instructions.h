@@ -8,7 +8,7 @@ typedef char byte;
 typedef int32_t number;
 
 enum Instruction {
-	MOV, ADD, SUB, MUL, DIV, MOD, RFI, WTO, CMP, BRN, PFS, POP, AND, IOR, XOR, RHD, WHD, END, LBL
+	MOV, ADD, SUB, MUL, DIV, MOD, RFI, WTO, CMP, BRN, GTB, GCB, PFS, POP, AND, IOR, XOR, RHD, WHD, END, LBL
 };
 
 typedef enum Instruction Instruction;
@@ -45,6 +45,8 @@ size_t command_length(ubyte command) {
 		case RHD:
 		case WHD:
 		case LBL:
+		case GTB:
+		case GCB:
 			return 5;
 	}
 	return 0;
