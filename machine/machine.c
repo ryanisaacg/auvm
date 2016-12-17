@@ -166,7 +166,7 @@ void execute_statement(size_t start, size_t position, size_t *new_position, bool
 				if(ram[start + search] == LBL) {
 					number label_pos = get_number(ram + start + search + 3);
 					if(label_pos == pos) {
-						*new_position = search;
+						*new_position = start + search;
 						break;
 					}
 				}
