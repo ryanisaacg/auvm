@@ -8,6 +8,7 @@ void lowercase(char *string);
 void output_command(FILE *in, FILE *out);
 void output_condition(FILE *in, FILE *out);
 void output_parameter(FILE *in, FILE *out);
+void eat_comments(FILE *in);
 
 int main(int argc, char *argv[]) {
 	if(argc < 3) {
@@ -17,16 +18,9 @@ int main(int argc, char *argv[]) {
 		FILE *input = fopen(argv[1], "r");
 		FILE *output = fopen(argv[2], "w");
 		while(!feof(input)) {
-			char next = getc(input);
-			while(next == ';') {
-				while(next != '\n') {
-					next = getc(input);
-				}
-				next = getc(input);
-			}
-			ungetc(next, input);
+			eat_comments(input);
 			output_command(input, output);
-			next = getc(input);
+			char next = getc(input);
 			if(next != ' ' && next != '\t' && !feof(input)) {
 				ungetc(next, input);
 				output_condition(input, output);
@@ -248,4 +242,13 @@ void output_parameter(FILE *in, FILE *out) {
 		putc((value >> 8) & 0xff, out);
 		putc((value) & 0xff, out);
 	}
+}
+
+void eat_comments(FILE *in) {
+	char next = getc(in);
+	while(next == ';') {
+		while(next != '\n') next = getc(in);
+		next = getc(in);
+	}
+	ungetc(next, in);
 }
