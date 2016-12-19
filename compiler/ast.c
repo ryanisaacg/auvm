@@ -158,7 +158,7 @@ static void func_return(FILE *stream) {
 	fputs("mov 0 R0\n\
 mul R0 =400 R1\n\
 add R1 =1 R1\n\
-sub =1 R0\n\
+sub =1 R0 R0\n\
 mov R0 0\n\
 gtb R1", stream);
 }
