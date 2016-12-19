@@ -173,6 +173,13 @@ void execute_statement(size_t start, size_t position, size_t *new_position, bool
 				search++;
 			}
 		} break;
+		case GTB: {
+			number pos = get_value(arguments);
+			*new_position = pos;
+		} break;
+		case GCB: {
+			set_value(arguments, position);
+		} break;
 		case RHD: {
 			number disk_spot = get_value(arguments);
 			set_value(arguments + 5, get_number(disk_buffer + disk_spot));
