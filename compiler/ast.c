@@ -122,6 +122,9 @@ static bool node_asm_literal(char *sval, FILE *stream) {
 	return false;
 }
 
+FunctionTable *functions = NULL;
+int label = 0;
+
 static void node_to_output(Node *root, Table *table, FILE *stream) {
 	char *sval 		= root->data.sval;
 	int ival		= root->data.ival;
@@ -157,6 +160,12 @@ add R0 R$0 R1\n", stream);
 			}
 			fputs("add R$0 =4 R3\nmov R3 R$0", stream);
 			table_add(table, varname);
+		} else if(strcmp(sval, "defn") == 0) {
+			Node *name_node = root->child;
+			char *name = name_node->data.sval;
+			func_table_add(functions, name, label);
+			fprintf(stream, "lbl %d\n", label);
+			label++;
 		} else {
 			fputs(sval, stream);
 		}
@@ -175,5 +184,8 @@ add R0 R$0 R1\n", stream);
 }
 
 void node_output(Node *root, FILE *stream) {
+	if(functions == NULL) {
+		functions = func_table_new();
+	}
 	node_to_output(root, table_new(NULL), stream);
 }
