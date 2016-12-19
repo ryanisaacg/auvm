@@ -119,11 +119,49 @@ static bool node_asm_literal(char *sval, FILE *stream) {
 	NODE_MIRROR("whd");
 	NODE_MIRROR("end");
 	NODE_MIRROR("lbl");
+	NODE_MIRROR("gtb");
+	NODE_MIRROR("gcb");
 	return false;
 }
 
 FunctionTable *functions = NULL;
 int label = 0;
+
+static void call_func(char *funcname, FILE *stream) {
+	//Get the current amount of stacks
+	//Add 1 to it
+	//Multiply it by the stack size (1024 in decimal, 400 in hex)
+	//Add 1 to it
+	//Get the current byte the CPU is looking at
+	//Add 36 to the value (24 in hex) to move past the instruction when returning
+	//Move that value into the first byte of the new stack
+	//Jump to the appropriate label for the function
+	fputs("mov 0 R0\n\
+add R0 =1 R0\n\
+mov R0 0\n\
+mul R0 =400 R0\n\
+add R0 =1 R0\n\
+gcb R1\n\
+add =24 R1 R1\n\
+mov R1 R$0\n", stream);
+	fprintf(stream, "brn %d", func_table_get(functions, funcname));
+}
+
+static void func_return(FILE *stream) {
+	//Get the current amount of stacks
+	//Multiply it by the stack size (1024 in decimal, 400 in hex)
+	//Add 1 to it
+	//Subtract one from the amount of stacks
+	//Store it as the number of stacks
+	//Get the byte indicated by the first value in the stack
+	//Jump there
+	fputs("mov 0 R0\n\
+mul R0 =400 R1\n\
+add R1 =1 R1\n\
+sub =1 R0\n\
+mov R0 0\n\
+gtb R1", stream);
+}
 
 static void node_to_output(Node *root, Table *table, FILE *stream) {
 	char *sval 		= root->data.sval;
@@ -137,11 +175,6 @@ static void node_to_output(Node *root, Table *table, FILE *stream) {
 			fputc('=', stream);
 			space = false;
 			break;
-		} else if(strcmp(sval, "stack-new") == 0) {
-			fputs("\
-mov 0 R0\n\
-add R0 =1 R0\n\
-mov R0 0", stream);
 		} else if(strcmp(sval, "var-new") == 0) {
 			eval_child = false;
 			char *varname = root->child->data.sval;
@@ -162,10 +195,19 @@ add R0 R$0 R1\n", stream);
 			table_add(table, varname);
 		} else if(strcmp(sval, "defn") == 0) {
 			Node *name_node = root->child;
+			Node *body_node = root->child->next->next;
 			char *name = name_node->data.sval;
 			func_table_add(functions, name, label);
 			fprintf(stream, "lbl %d\n", label);
 			label++;
+			eval_child = false;
+			node_to_output(body_node, table, stream);
+			putc('\n', stream);
+			func_return(stream);
+		} else if(strcmp(sval, "call") == 0) {
+			Node *func_name = root->child;
+			call_func(func_name->data.sval, stream);
+			eval_child = false;
 		} else {
 			fputs(sval, stream);
 		}

@@ -96,6 +96,14 @@ void output_command(FILE *input, FILE *output) {
 		putc(END, output);
 		getc(input); // eat other characters
 		break;
+	case 'g':
+		if(next == 't') {
+			putc(GTB, output);
+		} else {
+			putc(GCB, output);
+		}
+		getc(input); // eat 
+		break;
 	case 'i':
 		putc(IOR, output);
 		getc(input); //eat

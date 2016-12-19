@@ -24,6 +24,10 @@ All indices are in hexidecimal
 	- cmp R(AIndex) R(BIndex)
 - brn: Branches to another location in the code
 	- brn (Label)
+- gtb: Go to a specific byte in RAM and continue executing
+	- gtb R(Position)
+- gcb: Get the current byte the CPU is executing and store it
+	- gcb R(Position)
 - pfs: Pushes the current line to the function stack and moves the stack pointer
 	- pfs
 - pop: Pops the stack pointer, destroying all values on the stack. Returns to the last pfs call
@@ -40,8 +44,6 @@ All indices are in hexidecimal
 	- whd R(SourceIndex) (DiskLocation)
 - lbl: Defines a label (converted to index at assemble-time)
 	- lbl "(String)"
-- exe: Executes bytecode in memory at the given point
-	- exe R(SourceIndex) R(SourceLength)
 ##Constants
 Constants can be used in place of source registers, and are denoted with =
 
