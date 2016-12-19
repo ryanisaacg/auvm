@@ -198,18 +198,18 @@ add R0 R$0 R1\n", stream);
 			Node *body_node = root->child->next->next;
 			char *name = name_node->data.sval;
 			func_table_add(functions, name, label);
-			fprintf(stream, "lbl %d ; start function %s\n", label, name);
+			fprintf(stream, "lbl %d \n; start function %s\n", label, name);
 			label++;
 			eval_child = false;
 			node_to_output(body_node, table, stream);
 			putc('\n', stream);
 			func_return(stream);
-			fprintf(stream, " ; return function %s", name);
+			fprintf(stream, "\n; return function %s", name);
 		} else if(strcmp(sval, "call") == 0) {
 			Node *func_name = root->child;
-			fprintf(stream, "; call function %s\n", func_name->data.sval);
+			fprintf(stream, "\n; call function %s\n", func_name->data.sval);
 			call_func(func_name->data.sval, stream);
-			fprintf(stream, " ; end function call %s\n", func_name->data.sval);
+			fprintf(stream, "\n; end function call %s\n", func_name->data.sval);
 			eval_child = false;
 		} else {
 			fputs(sval, stream);
