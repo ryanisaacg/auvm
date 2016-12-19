@@ -18,11 +18,13 @@ int main(int argc, char *argv[]) {
 		FILE *output = fopen(argv[2], "w");
 		while(!feof(input)) {
 			char next = getc(input);
-			if(next == ';') {
-				while(getc(input) != '\n') {}
-			} else {
-				ungetc(next, input);
+			while(next == ';') {
+				while(next != '\n') {
+					next = getc(input);
+				}
+				next = getc(input);
 			}
+			ungetc(next, input);
 			output_command(input, output);
 			next = getc(input);
 			if(next != ' ' && next != '\t' && !feof(input)) {
