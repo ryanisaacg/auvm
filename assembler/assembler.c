@@ -17,8 +17,14 @@ int main(int argc, char *argv[]) {
 		FILE *input = fopen(argv[1], "r");
 		FILE *output = fopen(argv[2], "w");
 		while(!feof(input)) {
-			output_command(input, output);
 			char next = getc(input);
+			if(next == ';') {
+				while(getc(input) != '\n') {}
+			} else {
+				ungetc(next, input);
+			}
+			output_command(input, output);
+			next = getc(input);
 			if(next != ' ' && next != '\t' && !feof(input)) {
 				ungetc(next, input);
 				output_condition(input, output);
