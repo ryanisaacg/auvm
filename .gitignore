@@ -7,6 +7,6 @@ bios-asm
 bios-dasm
 translator.out
 lex.c
-yacc.tab.c
-yacc.tab.h
+*.tab.*
+asmlex.c
 lc.out
