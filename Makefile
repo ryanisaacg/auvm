@@ -20,8 +20,10 @@ bios-dasm: bios dasm.out
 	./dasm.out bios bios-dasm
 
 #Compile the assembler and disassembler
-asm.out: assembler/assembler.c
-	gcc assembler/assembler.c $(CFLAGS) -o asm.out
+asm.out: assembler/assembler.l assembler/assembler.y
+	flex -oasmlex.c assembler/assembler.l
+	bison -d -basmyacc assembler/assembler.y
+	gcc asmlex.c asmyacc.tab.c -Iinclude -Wno-implicit-function-declaration -g -o asm.out
 dasm.out: include/instructions.h assembler/disassembler.c
 	gcc assembler/disassembler.c $(CFLAGS) -o dasm.out
 
