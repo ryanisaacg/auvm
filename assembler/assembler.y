@@ -87,15 +87,22 @@ root:
 	| root NEWLINE
 
 command:
-	 command_word condition parameter_list NEWLINE
+	 command_word parameter_list NEWLINE
 
 command_word:
-	T_WORD { putc(get_value($1), out); }
-
-condition:
-	{ putc(UN, out); }
-	| T_WORD { putc(get_condition($1), out); }
-
+	T_WORD { 
+		int len = strlen($1); 
+		if(len == 3) { 
+			putc(get_value($1), out); 
+			putc(UN, out);
+		} else if(len == 5) {
+			int cond = get_condition($1 + 3);
+			*($1 + 3) = '\0';
+			int value = get_value($1);
+			putc(value, out);
+			putc(cond, out);
+		}
+	}
 parameter_list:
 	
 	| parameter_list parameter

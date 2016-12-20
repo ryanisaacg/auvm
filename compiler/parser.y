@@ -55,6 +55,7 @@ int main(int argc, char *argv[]) {
 			node_output(child, out);
 			fputc('\n', out);
 		}
+		fputc('\n', out);
 		fclose(yyin);
 		fclose(out);
 	}
