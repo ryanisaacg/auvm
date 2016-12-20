@@ -32,6 +32,7 @@ int main(int argc, char *argv[]) {
 					putc('=', output);
 					break;
 				case POINTER:
+					putc('%', output);
 					break;
 				}
 				ubyte value[4];
