@@ -139,10 +139,10 @@ static void call_func(char *funcname, FILE *stream) {
 	fputs("mov %0 R0\n\
 add R0 =1 R0\n\
 mov R0 %0\n\
-mul R0 =400 R0\n\
+mul R0 =1024 R0\n\
 add R0 =1 R0\n\
 gcb R1\n\
-add =24 R1 R1\n\
+add =43 R1 R1\n\
 mov R1 R$0\n", stream);
 	fprintf(stream, "brn %%%d", func_table_get(functions, funcname));
 }
@@ -156,7 +156,7 @@ static void func_return(FILE *stream) {
 	//Get the byte indicated by the first value in the stack
 	//Jump there
 	fputs("mov %0 R0\n\
-mul R0 =400 R1\n\
+mul R0 =1024 R1\n\
 add R1 =1 R1\n\
 sub =1 R0 R0\n\
 mov R0 %0\n\
