@@ -136,15 +136,15 @@ static void call_func(char *funcname, FILE *stream) {
 	//Add 36 to the value (24 in hex) to move past the instruction when returning
 	//Move that value into the first byte of the new stack
 	//Jump to the appropriate label for the function
-	fputs("mov 0 R0\n\
+	fputs("mov %0 R0\n\
 add R0 =1 R0\n\
-mov R0 0\n\
+mov R0 %0\n\
 mul R0 =400 R0\n\
 add R0 =1 R0\n\
 gcb R1\n\
 add =24 R1 R1\n\
 mov R1 R$0\n", stream);
-	fprintf(stream, "brn %d", func_table_get(functions, funcname));
+	fprintf(stream, "brn %%%d", func_table_get(functions, funcname));
 }
 
 static void func_return(FILE *stream) {
@@ -155,11 +155,11 @@ static void func_return(FILE *stream) {
 	//Store it as the number of stacks
 	//Get the byte indicated by the first value in the stack
 	//Jump there
-	fputs("mov 0 R0\n\
+	fputs("mov %0 R0\n\
 mul R0 =400 R1\n\
 add R1 =1 R1\n\
 sub =1 R0 R0\n\
-mov R0 0\n\
+mov R0 %0\n\
 gtb R1", stream);
 }
 
@@ -178,7 +178,7 @@ static void node_to_output(Node *root, Table *table, FILE *stream) {
 		} else if(strcmp(sval, "var-new") == 0) {
 			eval_child = false;
 			char *varname = root->child->data.sval;
-			fputs("mov 0 R0\n\
+			fputs("mov %0 R0\n\
 mul R0 =1024\n\
 add R0 =1 R0\n\
 add R0 R$0 R1\n", stream);
@@ -198,7 +198,7 @@ add R0 R$0 R1\n", stream);
 			Node *body_node = root->child->next->next;
 			char *name = name_node->data.sval;
 			func_table_add(functions, name, label);
-			fprintf(stream, "lbl %d \n; start function %s\n", label, name);
+			fprintf(stream, "lbl %%%d \n; start function %s\n", label, name);
 			label++;
 			eval_child = false;
 			node_to_output(body_node, table, stream);
@@ -223,7 +223,7 @@ add R0 R$0 R1\n", stream);
 	if(space) {
 		fputc(' ', stream);
 	}
-	for(Node *child = root->child; eval_child && child != NULL; child = child->next) {
+	for(Node *child= root->child; eval_child && child != NULL; child = child->next) {
 		node_output(child, stream);
 	}
 }
