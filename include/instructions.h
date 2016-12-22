@@ -55,11 +55,8 @@ size_t command_length(ubyte command) {
 number get_number(ubyte *bytes) {
 	number value = 0;
 	value += bytes[3];
-	value += bytes[2] * 10;
-	value += bytes[1] * 100;
-	value += (bytes[0] % 8) * 1000;
-	if(bytes[0] != 0 && bytes[0] % 8 == 0) {
-		value *= -1;
-	}
+	value += bytes[2] << 8;
+	value += bytes[1] << 16;
+	value += bytes[0] << 24;
 	return value;
 }

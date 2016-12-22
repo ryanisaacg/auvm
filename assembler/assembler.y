@@ -10,7 +10,7 @@ void write(FILE *out, int x) {
 	putc((x >> 24) & 0xff, out);
 	putc((x >> 16) & 0xff, out);
 	putc((x >> 8) & 0xff, out);
-	putc((x) & 0xff, out); 
+	putc((x) & 0xff, out);
 }
 
 int get_value(char *input) {
