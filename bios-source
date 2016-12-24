@@ -1,3 +1,5 @@
+(brn (const 0))
 (defn print () (wto (const 68)))
+(lbl (const 0))
 (call print)
 (end)
