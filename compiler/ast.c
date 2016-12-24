@@ -163,6 +163,26 @@ mov R0 %0\n\
 gtb R$1", stream);
 }
 
+//TODO: var_new doesn't work
+static void var_new(Node *root, Table *table, FILE *stream) {
+	char *varname = root->child->data.sval;
+	fputs("mov %0 R0\n\
+mul R0 =1024\n\
+add R0 =5 R0\n\
+add R0 R$0 R1\n", stream);
+	Node *value = root->child->next;
+	if(value->type == WORD_NODE) {
+		int position = table_get(table, value->data.sval);
+		fprintf(stream, "add R0 =%d R2\n", position);
+		fputs("mov R$2 R$1\n", stream);
+	} else if(value->type == NUMBER_NODE) {
+		int number = value->data.ival;
+		fprintf(stream, "mov =%d R$1\n", number);
+	}
+	fputs("add R$0 =4 R3\nmov R3 R$0", stream);
+	table_add(table, varname);
+}
+
 static void node_to_output(Node *root, Table *table, FILE *stream) {
 	char *sval 		= root->data.sval;
 	int ival		= root->data.ival;
@@ -176,23 +196,8 @@ static void node_to_output(Node *root, Table *table, FILE *stream) {
 			space = false;
 			break;
 		} else if(strcmp(sval, "var-new") == 0) {
+			var_new(root, table, stream);
 			eval_child = false;
-			char *varname = root->child->data.sval;
-			fputs("mov %0 R0\n\
-mul R0 =1024\n\
-add R0 =1 R0\n\
-add R0 R$0 R1\n", stream);
-			Node *value = root->child->next;
-			if(value->type == WORD_NODE) {
-				int position = table_get(table, value->data.sval);
-				fprintf(stream, "add R0 =%d R2\n", position);
-				fputs("mov R$2 R$1\n", stream);
-			} else if(value->type == NUMBER_NODE) {
-				int number = value->data.ival;
-				fprintf(stream, "mov =%d R$1\n", number);
-			}
-			fputs("add R$0 =4 R3\nmov R3 R$0", stream);
-			table_add(table, varname);
 		} else if(strcmp(sval, "defn") == 0) {
 			Node *name_node = root->child;
 			Node *body_node = root->child->next->next;
