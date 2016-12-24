@@ -160,7 +160,7 @@ mul R0 =1024 R1\n\
 add R1 =1 R1\n\
 sub =1 R0 R0\n\
 mov R0 %0\n\
-gtb R1", stream);
+gtb R$1", stream);
 }
 
 static void node_to_output(Node *root, Table *table, FILE *stream) {

@@ -65,6 +65,7 @@ number get_value(ubyte *instruction) {
 		case REGISTER:
 			return registers[get_number(instruction + 1)];
 		case REGISTER_VALUE:
+			return get_number(ram + registers[get_number(instruction + 1)]);
 		case POINTER:
 			return get_number(ram + get_number(instruction + 1));
 		case CONSTANT:
