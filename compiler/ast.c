@@ -201,7 +201,11 @@ add R0 R$0 R1\n", stream);
 			fprintf(stream, "lbl =%d \n; start function %s\n", label, name);
 			label++;
 			eval_child = false;
-			node_to_output(body_node, table, stream);
+			while(body_node != NULL) {
+				node_to_output(body_node, table, stream);
+				putc('\n', stream);
+				body_node = body_node->next;
+			}
 			putc('\n', stream);
 			func_return(stream);
 			fprintf(stream, "\n; return function %s", name);
