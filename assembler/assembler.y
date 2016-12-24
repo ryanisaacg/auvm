@@ -7,10 +7,9 @@
 	extern FILE *yyin;
 
 void write(FILE *out, int x) {
-	putc((x >> 24) & 0xff, out);
-	putc((x >> 16) & 0xff, out);
-	putc((x >> 8) & 0xff, out);
-	putc((x) & 0xff, out);
+	ubyte value[4];
+	set_number(value, x);
+	fwrite(value, 1, 4, out);
 }
 
 int get_value(char *input) {

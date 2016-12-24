@@ -81,10 +81,10 @@ void set_value(ubyte *instruction, int value) {
 			registers[get_number(instruction + 1)] = value;
 			break;
 		case REGISTER_VALUE:
-			memcpy(ram + registers[get_number(instruction + 1)], &value, 4);
+			set_number(ram + registers[get_number(instruction + 1)], value);
 			break;
 		case POINTER:
-			memcpy(ram + get_number(instruction + 1), &value, 4);
+			set_number(ram + get_number(instruction + 1), value);
 			break;
 		case CONSTANT:
 			fprintf(stderr, "Cannot set the value of a constant.\n");
