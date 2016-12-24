@@ -125,7 +125,7 @@ static bool node_asm_literal(char *sval, FILE *stream) {
 }
 
 FunctionTable *functions = NULL;
-int label = 0;
+int label = 1;
 
 static void call_func(char *funcname, FILE *stream) {
 	//Get the current amount of stacks
@@ -144,7 +144,7 @@ add R0 =1 R0\n\
 gcb R1\n\
 add =43 R1 R1\n\
 mov R1 R$0\n", stream);
-	fprintf(stream, "brn %%%d", func_table_get(functions, funcname));
+	fprintf(stream, "brn =%d", func_table_get(functions, funcname));
 }
 
 static void func_return(FILE *stream) {
@@ -198,7 +198,7 @@ add R0 R$0 R1\n", stream);
 			Node *body_node = root->child->next->next;
 			char *name = name_node->data.sval;
 			func_table_add(functions, name, label);
-			fprintf(stream, "lbl %%%d \n; start function %s\n", label, name);
+			fprintf(stream, "lbl =%d \n; start function %s\n", label, name);
 			label++;
 			eval_child = false;
 			node_to_output(body_node, table, stream);
