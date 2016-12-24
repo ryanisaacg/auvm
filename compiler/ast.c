@@ -232,6 +232,20 @@ add R0 R$0 R1\n", stream);
 			fprintf(stream, "lbl =%d\n", label + 1);
 			label += 2;
 			eval_child = false;
+		} else if(strcmp(sval, "while") == 0) {
+			Node *condition_node = root->child;
+			Node *if_body = condition_node->next;
+			fprintf(stream, "lbl =%d\n", label);
+			fputs("cmp ", stream);
+			node_to_output(condition_node, table, stream);
+			fputs("=1\n", stream);
+			fprintf(stream, "brnne =%d\n", label + 1);
+			node_to_output(if_body, table, stream);
+			putc('\n', stream);
+			fprintf(stream, "brn =%d\n", label);
+			fprintf(stream, "lbl =%d\n", label + 1); 
+			label += 2;
+			eval_child = false;
 		} else if(strcmp(sval, "true") == 0) {
 			fputs("=1 ", stream);
 		} else if(strcmp(sval, "false") == 0) {

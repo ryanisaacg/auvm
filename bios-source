@@ -2,6 +2,8 @@
 ;(defn print () 
 ;	(wto (const 68))
 ;	(wto (const 10)))
+(while false
+	(wto (const 33)))
 (if false
 	(wto (const 84))
 	(wto (const 70)))
