@@ -215,6 +215,27 @@ add R0 R$0 R1\n", stream);
 			call_func(func_name->data.sval, stream);
 			fprintf(stream, "\n; end function call %s\n", func_name->data.sval);
 			eval_child = false;
+		} else if(strcmp(sval, "if") == 0) {
+			Node *condition_node = root->child;
+			Node *if_body = condition_node->next;
+			Node *else_body = if_body->next;
+			fputs("cmp ", stream);
+			node_to_output(condition_node, table, stream);
+			fputs("=1\n", stream);
+			fprintf(stream, "brnne =%d\n", label);
+			node_to_output(if_body, table, stream);
+			putc('\n', stream);
+			fprintf(stream, "brn =%d\n", label + 1); 
+			fprintf(stream, "lbl =%d\n", label);
+			node_to_output(else_body, table, stream);
+			putc('\n', stream);
+			fprintf(stream, "lbl =%d\n", label + 1);
+			label += 2;
+			eval_child = false;
+		} else if(strcmp(sval, "true") == 0) {
+			fputs("=1 ", stream);
+		} else if(strcmp(sval, "false") == 0) {
+			fputs("=0 ", stream);
 		} else {
 			fputs(sval, stream);
 		}
