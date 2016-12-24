@@ -52,6 +52,13 @@ size_t command_length(ubyte command) {
 	return 0;
 }
 
+void set_number(ubyte *bytes, number n) {
+	bytes[0] = (n >> 24) & 0xff;
+	bytes[1] = (n >> 16) & 0xff;
+	bytes[2] = (n >> 8) & 0xff;
+	bytes[3] = n & 0xff;
+}
+
 number get_number(ubyte *bytes) {
 	number value = 0;
 	value += bytes[3];
