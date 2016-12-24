@@ -136,14 +136,14 @@ static void call_func(char *funcname, FILE *stream) {
 	//Add 36 to the value (24 in hex) to move past the instruction when returning
 	//Move that value into the first byte of the new stack
 	//Jump to the appropriate label for the function
-	fputs("mov %0 R0\n\
-add R0 =1 R0\n\
-mov R0 %0\n\
-mul R0 =1024 R0\n\
-add R0 =1 R0\n\
-gcb R1\n\
-add =43 R1 R1\n\
-mov R1 R$0\n", stream);
+	fputs(	"mov %0 R0\n"
+			"add R0 =1 R0\n"
+			"mov R0 %0\n"
+			"mul R0 =1024 R0\n"
+			"add R0 =1 R0\n"
+			"gcb R1\n"
+			"add =43 R1 R1\n"
+			"mov R1 R$0\n", stream);
 	fprintf(stream, "brn =%d", func_table_get(functions, funcname));
 }
 
@@ -155,21 +155,21 @@ static void func_return(FILE *stream) {
 	//Store it as the number of stacks
 	//Get the byte indicated by the first value in the stack
 	//Jump there
-	fputs("mov %0 R0\n\
-mul R0 =1024 R1\n\
-add R1 =1 R1\n\
-sub =1 R0 R0\n\
-mov R0 %0\n\
-gtb R$1", stream);
+	fputs(	"mov %0 R0\n"
+			"mul R0 =1024 R1\n"
+			"add R1 =1 R1\n"
+			"sub =1 R0 R0\n"
+			"mov R0 %0\n"
+			"gtb R$1", stream);
 }
 
 //TODO: var_new doesn't work
 static void var_new(Node *root, Table *table, FILE *stream) {
 	char *varname = root->child->data.sval;
-	fputs("mov %0 R0\n\
-mul R0 =1024\n\
-add R0 =5 R0\n\
-add R0 R$0 R1\n", stream);
+	fputs(	"mov %0 R0\n"
+			"mul R0 =1024\n"
+			"add R0 =5 R0\n"
+			"add R0 R$0 R1\n", stream);
 	Node *value = root->child->next;
 	if(value->type == WORD_NODE) {
 		int position = table_get(table, value->data.sval);
@@ -179,7 +179,8 @@ add R0 R$0 R1\n", stream);
 		int number = value->data.ival;
 		fprintf(stream, "mov =%d R$1\n", number);
 	}
-	fputs("add R$0 =4 R3\nmov R3 R$0", stream);
+	fputs(	"add R$0 =4 R3\n"
+			"mov R3 R$0", stream);
 	table_add(table, varname);
 }
 
