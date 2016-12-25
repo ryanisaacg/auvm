@@ -23,7 +23,11 @@ int table_get(Table *tbl, char *name) {
 			return i;
 		}
 	}
-	return -1;
+	if(tbl->parent != NULL) {
+		return table_get(tbl, name);
+	} else {
+		return -1;
+	}
 }
 
 FunctionTable *func_table_new() {
