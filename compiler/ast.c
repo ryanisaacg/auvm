@@ -125,6 +125,7 @@ static bool node_asm_literal(char *sval, FILE *stream) {
 }
 
 FunctionTable *functions = NULL;
+Table *global_table = NULL;
 int label = 1;
 
 static void call_func(char *funcname, FILE *stream) {
@@ -166,7 +167,8 @@ static void func_return(FILE *stream) {
 //TODO: var_new doesn't work
 static void var_new(Node *root, Table *table, FILE *stream) {
 	char *varname = root->child->data.sval;
-	fputs(	"mov %0 R0\n"
+	fputs(	"; Create a new variable\n"
+			"mov %0 R0\n"
 			"mul R0 =1024\n"
 			"add R0 =5 R0\n"
 			"add R0 R$0 R1\n", stream);
@@ -180,8 +182,22 @@ static void var_new(Node *root, Table *table, FILE *stream) {
 		fprintf(stream, "mov =%d R$1\n", number);
 	}
 	fputs(	"add R$0 =4 R3\n"
-			"mov R3 R$0", stream);
+			"mov R3 R$0\n"
+			"; End variable creation", stream);
 	table_add(table, varname);
+}
+
+static void var_get(Node *root, Table *table, FILE *stream) {
+	char *varname = root->child->data.sval;
+	int register_index = root->child->next->data.ival;
+	int offset = table_get(table, varname);
+	fputs(			"; Get the value of a variable into a register\n"
+					"mov %0 R0\n"
+					"mul R0 =1024\n"
+					"add R0 =5 R0\n", stream);
+	fprintf(stream, "add R0 =%d R0\n"
+					"mov R$0 R%d", offset, register_index);
+	fputs(			"; Stop getting the value of a variable\n", stream);
 }
 
 static void node_to_output(Node *root, Table *table, FILE *stream) {
@@ -199,6 +215,9 @@ static void node_to_output(Node *root, Table *table, FILE *stream) {
 		} else if(strcmp(sval, "var-new") == 0) {
 			var_new(root, table, stream);
 			eval_child = false;
+		} else if(strcmp(sval, "var-get") == 0) {
+			var_get(root, table, stream);
+			eval_child = false;
 		} else if(strcmp(sval, "defn") == 0) {
 			Node *name_node = root->child;
 			Node *body_node = root->child->next->next;
@@ -207,6 +226,7 @@ static void node_to_output(Node *root, Table *table, FILE *stream) {
 			fprintf(stream, "lbl =%d \n; start function %s\n", label, name);
 			label++;
 			eval_child = false;
+			table = table_new(table);
 			while(body_node != NULL) {
 				node_to_output(body_node, table, stream);
 				putc('\n', stream);
@@ -215,6 +235,7 @@ static void node_to_output(Node *root, Table *table, FILE *stream) {
 			putc('\n', stream);
 			func_return(stream);
 			fprintf(stream, "\n; return function %s", name);
+			free(table);
 		} else if(strcmp(sval, "call") == 0) {
 			Node *func_name = root->child;
 			fprintf(stream, "\n; call function %s\n", func_name->data.sval);
@@ -276,6 +297,7 @@ static void node_to_output(Node *root, Table *table, FILE *stream) {
 void node_output(Node *root, FILE *stream) {
 	if(functions == NULL) {
 		functions = func_table_new();
+		global_table = table_new(NULL);
 	}
-	node_to_output(root, table_new(NULL), stream);
+	node_to_output(root, global_table, stream);
 }
