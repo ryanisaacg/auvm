@@ -200,6 +200,24 @@ static void var_get(Node *root, Table *table, FILE *stream) {
 	fputs(			"; Stop getting the value of a variable\n", stream);
 }
 
+static void var_set(Node *root, Table *table, FILE *stream) {
+	char *varname = root->child->data.sval;
+	fputs(			"; Set the value of a variable\n", stream);
+	if(root->child->next->type == WORD_NODE) {
+		if(strcmp(root->child->next->data.sval, "const") == 0) {
+			fprintf(stream, "mov =%d R1\n", root->child->next->child->data.ival);
+		}
+	} else {
+		fprintf(stream, "mov R%d R1\n", root->child->next->data.ival);
+	}
+	fputs(			"mov %0 R0\n"
+					"mul R0 =1024\n"
+					"add R0 =5 R0\n", stream);
+	fprintf(stream, "add R0 =%d R0\n", table_get(table, varname));
+	fputs(			"mov R1 R$0\n"
+					"; End setting the value of a variable\n", stream);
+}
+
 static void node_to_output(Node *root, Table *table, FILE *stream) {
 	char *sval 		= root->data.sval;
 	int ival		= root->data.ival;
@@ -217,6 +235,9 @@ static void node_to_output(Node *root, Table *table, FILE *stream) {
 			eval_child = false;
 		} else if(strcmp(sval, "var-get") == 0) {
 			var_get(root, table, stream);
+			eval_child = false;
+		} else if(strcmp(sval, "var-set") == 0) {
+			var_set(root, table, stream);
 			eval_child = false;
 		} else if(strcmp(sval, "defn") == 0) {
 			Node *name_node = root->child;
