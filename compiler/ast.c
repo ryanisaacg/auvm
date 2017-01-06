@@ -181,7 +181,7 @@ static void var_new(Node *root, Table *table, FILE *stream) {
 		int number = value->data.ival;
 		fprintf(stream, "mov =%d R$1\n", number);
 	}
-	fputs(	"add R$0 =4 R3\n"
+	fputs(	"mov R$0 R3\n"
 			"mov R3 R$0\n"
 			"; End variable creation", stream);
 	table_add(table, varname);
