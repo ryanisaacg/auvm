@@ -35,19 +35,28 @@ FunctionTable *func_table_new() {
 	ft->length = 0;
 	return ft;
 }
-void func_table_add(FunctionTable *ft, char *name, int label) {
+void func_table_add(FunctionTable *ft, char *name, char **params, int label) {
 	ft->names[ft->length] = name;
 	ft->labels[ft->length] = label;
+	ft->params[ft->length] = params;
 	ft->length++;
 	if(ft->length > 1024) {
 		fputs("Added too many entries to a function table.", stderr);
 	}
 }
-int func_table_get(FunctionTable *tbl, char *name) {
+int func_table_get_index(FunctionTable *tbl, char *name) {
 	for(size_t i = 0; i < tbl->length; i++) {
 		if(strcmp(tbl->names[i], name) == 0) {
-			return tbl->labels[i];
+			return i;
 		}
 	}
 	return -1;
+}
+
+int func_table_get_label(FunctionTable *tbl, int index) {
+	return tbl->labels[index];
+}
+
+char **func_table_params(FunctionTable *tbl, int index) {
+	return tbl->params[index];
 }
