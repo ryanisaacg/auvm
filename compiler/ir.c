@@ -41,7 +41,13 @@ void ir_get_var(char *name, int reg) {
 }
 
 void ir_set_var(char *name, NodeData data, NodeType type) {
-
+	current->type = VAR_SET;
+	current->params = PARAMS(3);
+	current->params[0] = name;
+	NodeData *d = current->params[1] = malloc(sizeof(NodeData));
+	*d = data;
+	NodeType *t = current->params[2] = malloc(sizeof(NodeType));
+	*t = type;
 }
 
 void ir_start_fun(char *name, char **args) {
