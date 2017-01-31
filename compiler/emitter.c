@@ -24,6 +24,7 @@ void ir_emit(IrNode *root, FILE *output) {
 	file = output;
 	tbl = table_new(NULL);
 	ftbl = func_table_new();
+	fputs("brn =0\n", output); //jump to the main
 	while(root != NULL) {
 		switch(root->type) {
 		case ASM:
@@ -107,9 +108,32 @@ static void emit_var_set(char *varname, NodeData *data, NodeType *type);
 static void emit_start_fun(char *name, char **args);
 static void emit_end_fun();
 static void emit_call_fun(char *name, NodeData *data, NodeType *type, size_t *args);
-static void emit_return_fun(NodeData *data, NodeType *type);
-static void emit_start_main();
-static void emit_end_main();
+
+static void emit_return_fun(NodeData *data, NodeType *type) {
+	//Get the current amount of stacks
+	//Multiply it by the stack size (1024 in decimal, 400 in hex)
+	//Add 1 to it
+	//Subtract one from the amount of stacks
+	//Store it as the number of stacks
+	//Get the byte indicated by the first value in the stack
+	//Jump there
+	//TODO: Actual return values
+	fputs(	"mov %0 R0\n"
+			"mul R0 =1024 R1\n"
+			"add R1 =1 R1\n"
+			"sub =1 R0 R0\n"
+			"mov R0 %0\n"
+			"gtb R$1", file);
+}
+
+static void emit_start_main() {
+	fputs("lbl =0\n", file);
+}
+
+static void emit_end_main() {
+	fputs("exit\n", file);
+}
+
 static void emit_if_start();
 static void emit_while_start();
 static void emit_cond_body_start();
