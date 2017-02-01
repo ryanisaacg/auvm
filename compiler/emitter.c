@@ -16,9 +16,12 @@ static void emit_return_fun(NodeData *data, NodeType *type);
 static void emit_start_main();
 static void emit_end_main();
 static void emit_if_start();
+static void emit_if_body_start();
+static void emit_else_body_start();
+static void emit_if_end();
 static void emit_while_start();
-static void emit_cond_body_start();
-static void emit_cond_body_end();
+static void emit_while_body_start();
+static void emit_while_end();
 
 void ir_emit(IrNode *root, FILE *output) {
 	file = output;
@@ -60,14 +63,23 @@ void ir_emit(IrNode *root, FILE *output) {
 		case IF_START:
 			emit_if_start();
 			break;
+		case IF_BODY_START:
+			emit_if_body_start();
+			break;
+		case ELSE_BODY_START:
+			emit_else_body_start();
+			break;
+		case IF_END:
+			emit_if_end();
+			break;
 		case WHILE_START:
 			emit_while_start();
 			break;
-		case COND_BODY_START:
-			emit_cond_body_start();
+		case WHILE_BODY_START:
+			emit_while_body_start();
 			break;
-		case COND_BODY_END:
-			emit_cond_body_end();
+		case WHILE_END:
+			emit_while_end();
 			break;
 		}
 		root = root->next;
@@ -135,9 +147,10 @@ static void emit_end_main() {
 }
 
 static void emit_if_start();
+static void emit_if_body_start();
+static void emit_else_body_start();
+static void emit_if_end();
+
 static void emit_while_start();
-static void emit_cond_body_start();
-
-static void emit_cond_body_end() {
-
-}
+static void emit_while_body_start();
+static void emit_while_end();
