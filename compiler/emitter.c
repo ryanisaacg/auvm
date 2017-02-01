@@ -4,6 +4,9 @@
 FILE *file;
 Table *tbl;
 FunctionTable *ftbl;
+int label = 0;
+
+//TODO: Fix the problem where nested ifs will override each others labels
 
 static void emit_asm(char *string);
 static void emit_var_new(char *varname);
@@ -148,8 +151,17 @@ static void emit_end_main() {
 
 static void emit_if_start();
 static void emit_if_body_start();
-static void emit_else_body_start();
-static void emit_if_end();
+
+static void emit_else_body_start() {
+	fprintf(file, "brn =%d\n", label + 1); 
+	fprintf(file, "lbl =%d\n", label);
+}
+
+static void emit_if_end() {
+	putc('\n', file);
+	fprintf(file, "lbl =%d\n", label + 1);
+	label += 2;
+}
 
 static void emit_while_start();
 static void emit_while_body_start();
