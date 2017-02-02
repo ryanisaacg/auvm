@@ -106,7 +106,11 @@ static void emit_var_get(char *varname, int *reg) {
 
 static void emit_var_set(char *varname, NodeData *data, NodeType *type);
 static void emit_start_fun(char *name, char **args);
-static void emit_end_fun();
+
+static void emit_end_fun() {
+	tbl = tbl->parent;
+}
+
 static void emit_call_fun(char *name, NodeData *data, NodeType *type, size_t *args);
 
 static void emit_return_fun(NodeData *data, NodeType *type) {
