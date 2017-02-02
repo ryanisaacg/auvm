@@ -97,17 +97,31 @@ void ir_if_start() {
 	MOVE_NODE;
 }
 
+void ir_if_body_start() {
+	current->type = IF_BODY_START;
+	MOVE_NODE;
+}
+
+void ir_else_body_start() {
+	current->type = ELSE_BODY_START;
+	MOVE_NODE;
+}
+
+void ir_if_end() {
+	current->type = IF_END;
+	MOVE_NODE;
+}
+
 void ir_while_start() {
 	current->type = WHILE_START;
 	MOVE_NODE;
 }
-
-void ir_cond_body_start() {
-	current->type = COND_BODY_START;
+void ir_while_body_start() {
+	current->type = WHILE_BODY_START;
 	MOVE_NODE;
 }
 
-void ir_cond_body_end() {
-	current->type = COND_BODY_END;
+void ir_while_end() {
+	current->type = WHILE_END;
 	MOVE_NODE;
 }

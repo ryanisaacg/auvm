@@ -12,7 +12,7 @@
 
 #include "ast.h"
 
-typedef enum { ASM, VAR_NEW, VAR_GET, VAR_SET, DEF_FUN, END_FUN, CALL_FUN, RETURN_FUN, MAIN, END_MAIN, IF_START, WHILE_START, COND_BODY_START, COND_BODY_END } IrType;
+typedef enum { ASM, VAR_NEW, VAR_GET, VAR_SET, DEF_FUN, END_FUN, CALL_FUN, RETURN_FUN, MAIN, END_MAIN, IF_START, IF_BODY_START, ELSE_BODY_START, IF_END, WHILE_START, WHILE_BODY_START, WHILE_END } IrType;
 
 typedef struct IrNode {
 	IrType type;
@@ -38,6 +38,9 @@ void ir_return_fun(NodeData data, NodeType type);
 void ir_start_main();
 void ir_end_main();
 void ir_if_start();
+void ir_if_body_start();
+void ir_else_body_start();
+void ir_if_end();
 void ir_while_start();
-void ir_cond_body_start();
-void ir_cond_body_end();
+void ir_while_body_start();
+void ir_while_end();
