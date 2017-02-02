@@ -40,6 +40,8 @@ compiler/obj/ir.o: compiler/obj compiler/ir.c compiler/ir.h
 	gcc compiler/ir.c $(CFLAGS) -c -o compiler/obj/ir.o
 compiler/obj/emitter.o: compiler/obj compiler/emitter.h compiler/emitter.c
 	gcc compiler/emitter.c $(CFLAGS) -c -o compiler/obj/emitter.o
+compiler/obj/stack.o: compiler/obj compiler/stack.h compiler/stack.c
+	gcc compiler/stack.c $(CFLAGS) -c -o compiler/obj/stack.o
 compiler/obj/table.o: compiler/obj compiler/table.h compiler/table.c
 	gcc compiler/table.c $(CFLAGS) -c -o compiler/obj/table.o
 lc.out: compiler/parser.l compiler/parser.y compiler/obj/ast.o compiler/obj/table.o
