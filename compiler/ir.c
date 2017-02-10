@@ -32,10 +32,11 @@ void ir_new_var(char *name) {
 }
 
 void ir_get_var(char *name, int reg) {
-	current->type = VAR_NEW;
-	current->params = PARAMS(1);
-	current->params[0] = malloc(sizeof(int));
-	int *box = current->params[0];
+	current->type = VAR_GET;
+	current->params = PARAMS(2);
+	current->params[0] = name;
+	current->params[1] = malloc(sizeof(int));
+	int *box = current->params[1];
 	*box = reg;
 	MOVE_NODE;
 }
