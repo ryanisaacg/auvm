@@ -44,10 +44,10 @@ compiler/obj/stack.o: compiler/obj compiler/stack.h compiler/stack.c
 	gcc compiler/stack.c $(CFLAGS) -c -o compiler/obj/stack.o
 compiler/obj/table.o: compiler/obj compiler/table.h compiler/table.c
 	gcc compiler/table.c $(CFLAGS) -c -o compiler/obj/table.o
-lc.out: compiler/parser.l compiler/parser.y compiler/obj/ast.o compiler/obj/table.o compiler/obj/ir.o compiler/obj/emitter.o
+lc.out: compiler/parser.l compiler/parser.y compiler/obj/ast.o compiler/obj/table.o compiler/obj/ir.o compiler/obj/emitter.o compiler/obj/stack.o
 	flex -olex.c compiler/parser.l
 	bison -d -byacc compiler/parser.y
-	gcc -Icompiler lex.c yacc.tab.c  -Wno-implicit-function-declaration compiler/obj/table.o compiler/obj/ast.o compiler/obj/ir.o compiler/obj/emitter.o -std=c99 -o lc.out
+	gcc -Icompiler lex.c yacc.tab.c  -Wno-implicit-function-declaration compiler/obj/table.o compiler/obj/ast.o compiler/obj/ir.o  compiler/obj/emitter.o compiler/obj/stack.o -std=c99 -o lc.out
 
 # Compile the VM
 auvm.out: machine/obj/io.o machine/obj/machine.o
