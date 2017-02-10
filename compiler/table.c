@@ -38,7 +38,7 @@ FunctionTable *func_table_new() {
 void func_table_add(FunctionTable *ft, char *name, char **params, int label) {
 	ft->names[ft->length] = name;
 	ft->labels[ft->length] = label;
-	ft->params[ft->length] = params;
+	ft->param[ft->length] = params;
 	ft->length++;
 	if(ft->length > 1024) {
 		fputs("Added too many entries to a function table.", stderr);
@@ -58,5 +58,5 @@ int func_table_get_label(FunctionTable *tbl, int index) {
 }
 
 char **func_table_params(FunctionTable *tbl, int index) {
-	return tbl->params[index];
+	return tbl->param[index];
 }
