@@ -70,7 +70,7 @@ void ir_emit(IrNode *root, FILE *output) {
 			emit_start_main();
 			break;
 		case END_MAIN:
-			emit_start_main();
+			emit_end_main();
 			break;
 		case IF_START:
 			emit_if_start();
@@ -156,6 +156,7 @@ static void emit_start_fun(char *name, char **args) {
 	fprintf(file, "lbl =%d \n; start function %s\n", label, name);
 	label++;
 	tbl = table_new(tbl);
+	emit_var_new("__return");
 }
 
 static void go_up_func_stack() {
@@ -208,8 +209,8 @@ static void emit_call_fun(char *name, NodeData *data, NodeType *type, size_t *ar
 }
 
 static void emit_return_fun(NodeData *data, NodeType *type) {
-	//TODO: Actual return values
 	go_up_func_stack();
+	emit_var_set("__return", data, type);
 }
 
 static void emit_start_main() {
