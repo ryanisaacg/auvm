@@ -34,7 +34,7 @@ R[0-9]+						{ yylval.ival = atoi(yytext + 1);		return T_REGISTER; 		}
 [A-Za-z]+					{ yylval.sval = upcase(dupstr(yytext)); 	return T_WORD; 			}
 \n							{ 											return NEWLINE; 		}
 [ \t\r]+					{ } //whitespace
-
+.							{ }
 %%
 
 void yyerror(char *message) {
