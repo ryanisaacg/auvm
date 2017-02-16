@@ -11,8 +11,6 @@ FunctionTable *ftbl;
 Stack *labels;
 int label = 0;
 
-//TODO: Fix the problem where nested ifs will override each others labels
-
 static void emit_asm(char *string);
 static void emit_var_new(char *varname);
 static void emit_var_get(char *varname, int *reg);
