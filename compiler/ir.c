@@ -3,7 +3,7 @@
 #include "emitter.h"
 #include <stdlib.h>
 
-#define MOVE_NODE current->next = malloc(sizeof(IrNode)); current = current->next;
+#define MOVE_NODE current->next = malloc(sizeof(IrNode)); current = current->next; current->next = NULL;
 #define PARAMS(n) malloc(sizeof(void*) * (n))
 
 IrNode *root, *current;
@@ -11,6 +11,7 @@ IrNode *root, *current;
 void ir_start_file() {
 	root = malloc(sizeof(IrNode));
 	current = root;
+	current->next = NULL;
 }
 
 void ir_end_file(FILE *out_stream) {
