@@ -151,16 +151,18 @@ static void node_to_output(Node *root) {
 			}
 			ir_call_fun(root->child->data.sval, data, type, length);
 		} else if(strcmp(sval, "if") == 0) {
+			//Get the value of the variable being checked against
+			ir_get_var(root->child->data.sval, 0);
 			ir_if_start();
-			node_to_output(root->child);
 			ir_if_body_start();
 			node_to_output(root->child->next);
 			ir_else_body_start();
 			node_to_output(root->child->next->next);
 			ir_if_end();
 		} else if(strcmp(sval, "while") == 0) {
+			//Get the value of the variable being checked against
+			ir_get_var(root->child->data.sval, 0);
 			ir_while_start();
-			node_to_output(root->child);
 			ir_while_body_start();
 			node_to_output(root->child->next);
 			ir_while_end();

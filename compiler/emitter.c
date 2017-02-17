@@ -9,7 +9,7 @@ FILE *file;
 Table *tbl;
 FunctionTable *ftbl;
 Stack *labels;
-int label = 0;
+int label = 1;
 
 static void emit_asm(char *string);
 static void emit_var_new(char *varname);
@@ -122,7 +122,7 @@ static void emit_var_get(char *varname, int *reg) {
 					"mul R0 =1024\n"
 					"add R0 =5 R0\n", file);
 	fprintf(file, "add R0 =%d R0\n"
-					"mov R$0 R%d", offset, register_index);
+					"mov R$0 R%d\n", offset, register_index);
 	fputs(			"; Stop getting the value of a variable\n", file);
 }
 
@@ -223,14 +223,13 @@ static void emit_end_main() {
 //TODO: Actual handling of expressions in ifs
 static void emit_if_start() {
 	stack_push(labels, label); //store what the label was when this if started
-	fputs("cmp ", file); //start a comparison
+	fputs("cmp R0 =0\n", file); //compare the register to 0
 	label += 2; //increment the jump label
 }
 
 static void emit_if_body_start() {
 	int lbl = stack_peek(labels); //find the label of the if that this is the body for
-	putc('\n', file); //newline to terminate the if header expression
-	fprintf(file, "=0\nbrneq =%d\n", lbl); //If the condition was false, go to the else
+	fprintf(file, "brneq =%d\n", lbl); //If the condition was false, go to the else
 }
 
 static void emit_else_body_start() {
@@ -249,12 +248,11 @@ static void emit_if_end() {
 static void emit_while_start() {
 	stack_push(labels, label); //store what the label was when this while started
 	fprintf(file, "lbl =%d\n", label); //store the label to return to at the end of a loop iteration
-	fputs("cmp ", file); //start a comparison
+	fputs("cmp R0 =0\n", file); //start a comparison
 	label += 2; //increment the jump label
 }
 static void emit_while_body_start() {
 	int lbl = stack_peek(labels);
-	fputs("=0\n", file); //End the comparison
 	fprintf(file, "brnne =%d\n", lbl + 1); 
 }
 
