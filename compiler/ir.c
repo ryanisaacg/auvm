@@ -50,6 +50,7 @@ void ir_set_var(char *name, NodeData data, NodeType type) {
 	*d = data;
 	NodeType *t = current->params[2] = malloc(sizeof(NodeType));
 	*t = type;
+	MOVE_NODE;
 }
 
 void ir_start_fun(char *name, char **args) {
