@@ -1,0 +1,2 @@
+the lisp compiler hangs when compiling functions
+valid asm occasionally fails to have the last instruction transcribed
