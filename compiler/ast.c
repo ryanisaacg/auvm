@@ -166,7 +166,11 @@ static void node_to_output(Node *root) {
 			ir_while_end();
 		} else if(strcmp(sval, "main") == 0) {
 			ir_start_main();
-			node_to_output(root->child);
+			Node *current = root->child;
+			while(current != NULL) {
+				node_to_output(current);
+				current = current->next;
+			}
 			ir_end_main();
 		} else if(strcmp(sval, "asm") == 0) {
 			ir_inline(root->child->data.sval);
