@@ -110,7 +110,7 @@ static void emit_var_new(char *varname) {
 			"add R0 R$0 R1\n"
 			"mov R$0 R3\n"
 			"mov R3 R$0\n"
-			"; End variable creation", file);
+			"; End variable creation\n", file);
 	table_add(tbl, varname);
 }
 
@@ -142,7 +142,8 @@ static void emit_var_set(char *varname, NodeData *data, NodeType *type) {
 		fprintf(stderr, "Cannot set a variable to NIL.\n");
 		break;
 	}
-	fputs(			"mov %0 R0\n" //Get the number of stacks
+	fputs(			";Set the value of a variable\n" 
+					"mov %0 R0\n" //Get the number of stacks
 					"mul R0 =1024\n" //Multiply it by 1024
 					"add R0 =5 R0\n", file); //Move past the initial byte
 	fprintf(file, 	"add R0 =%d R0\n", table_get(tbl, varname)); //Go the spot of the byte
