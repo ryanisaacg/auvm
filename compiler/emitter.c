@@ -1,6 +1,7 @@
 #include "emitter.h"
 
 #include <stdlib.h>
+#include <string.h>
 
 #include "stack.h"
 #include "table.h"
@@ -41,7 +42,9 @@ void ir_emit(IrNode *root, FILE *output) {
 	while(root != NULL) {
 		switch(root->type) {
 		case ASM:
-			emit_asm(root->params[0]);
+			if(root->params != NULL) {
+				emit_asm(root->params[0]);
+			}
 			break;
 		case VAR_NEW:
 			emit_var_new(root->params[0]);
@@ -129,8 +132,15 @@ static void emit_var_get(char *varname, int *reg) {
 static void emit_var_set(char *varname, NodeData *data, NodeType *type) {
 	switch(*type) {
 	case WORD_NODE: {
-		int reg = 1;
-		emit_var_get(varname, &reg);
+		char *word = data->sval;
+		//Setting a variable to a register value
+		if(strlen(word) == 2 && word[0] == 'R' && word[1] >= '0' && word[1] <= '9') {
+			fprintf(file, "mov R%d R1\n", word[1] - '0');
+		} else {
+			//Setting a variable to a variable value
+			int reg = 1;
+			emit_var_get(data->sval, &reg);
+		}
 	}	break;
 	case STRING_NODE:
 		fprintf(stderr, "Setting variables to strings is not yet supported.\n");

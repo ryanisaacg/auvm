@@ -5,6 +5,8 @@
 	(var-new x 65)
 	(var-set x 66)
 	(var-get x 0)
+	(asm "mov =0 R0")
+	(var-set x R0)
 	(if x 
 		(asm "wto =65") 
 		(asm "wto =66")))
