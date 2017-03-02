@@ -1,0 +1,2 @@
+A list of hacky, odd patches that don't seem necessary
+ASM nodes occasionally have null data, which we check against
