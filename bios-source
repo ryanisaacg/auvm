@@ -1,6 +1,6 @@
-;(defn print (a) 
-;	(asm "wto =68")
-;	(asm "wto =10"))
+(defn print (a) 
+	(asm "wto =68")
+	(asm "wto =10"))
 (main
 	(var-new x 65)
 	(var-set x 66)
