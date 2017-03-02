@@ -129,6 +129,7 @@ static void node_to_output(Node *root) {
 			ir_start_fun(name, param_list);
 			while(body_node != NULL) {
 				node_to_output(body_node);
+				body_node = body_node->next;
 			}
 			ir_end_fun();
 		} else if(strcmp(sval, "call") == 0) {
