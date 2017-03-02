@@ -69,7 +69,10 @@ void ir_end_fun() {
 void ir_call_fun(char *name, NodeData *data, NodeType *type, size_t num_args) {
 	current->type = CALL_FUN;
 	current->params = PARAMS(4);
-	current->params = (void*[]){ name, data, type, malloc(sizeof(size_t)) };
+	current->params[0] = name;
+	current->params[1] = data;
+	current->params[2] = type;
+	current->params[3] = malloc(sizeof(size_t));
 	size_t *arg = current->params[3];
 	*arg = num_args;
 	MOVE_NODE;
