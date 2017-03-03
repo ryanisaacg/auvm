@@ -10,13 +10,14 @@ typedef union {
 	int ival;
 } NodeData;
 
-typedef enum { WORD_NODE, STRING_NODE, NUMBER_NODE, NIL_NODE} NodeType;
+typedef enum { WORD_NODE, STRING_NODE, NUMBER_NODE, NIL_NODE, ROOT_NODE} NodeType;
 
 struct Node {
 	NodeData data;
 	NodeType type;
 	Node *child, *next;
 };
+Node *node_new_root();
 Node *node_new_nil();
 Node *node_new_str(char *data, NodeType type);
 Node *node_new_int(int data, NodeType type);

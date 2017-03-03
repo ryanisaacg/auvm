@@ -7,7 +7,10 @@
 
 #include "ir.h"
 #include "table.h"
-
+Node *node_new_root() {
+	NodeData nd;
+	return node_new(nd, ROOT_NODE);
+}
 Node *node_new_nil() {
 	NodeData nd;
 	return node_new(nd, NIL_NODE);
@@ -60,6 +63,9 @@ static void node_print_indent(Node *root, int indent) {
 		case NIL_NODE:
 			puts("Nil\n");
 			break;
+		case ROOT_NODE:
+			puts("Root\n");
+			break;
 	}
 	//Print children indented
 	for(Node *child = root->child; child != NULL; child = child->next) {
@@ -84,6 +90,9 @@ char *node_tostring(Node *node) {
 		break;
 	case NIL_NODE:
 		sval = "nil";
+		break;
+	case ROOT_NODE:
+		sval = "root";
 		break;
 	}
 	return sval;
@@ -181,6 +190,13 @@ static void node_to_output(Node *root) {
 			ir_inline("=1 ");
 		} else if(strcmp(sval, "false") == 0) {
 			ir_inline("=0 ");
+		}
+		break;
+	case ROOT_NODE:
+		root = root->child;
+		while(root != NULL) {
+			node_to_output(root);
+			root = root->next;
 		}
 		break;
 	default:
