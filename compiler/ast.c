@@ -116,7 +116,7 @@ static void node_to_output(Node *root) {
 			Node *parameters = name_node->next;
 			char **param_list;
 			if(parameters->type != NIL_NODE) {
-				char **param_list = malloc(sizeof(char*) * 8);
+				param_list = malloc(sizeof(char*) * 8);
 				size_t length = 1, capacity = 8;
 				Node *current = name_node->next;
 				param_list[0] = current->data.sval;
