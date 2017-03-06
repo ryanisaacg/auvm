@@ -33,7 +33,6 @@ static void go_up_func_stack();
 
 
 void ir_emit(IrNode *root, FILE *output) {
-	printf("IR Emitting\n");
 	file = output;
 	tbl = table_new(NULL);
 	ftbl = func_table_new();
