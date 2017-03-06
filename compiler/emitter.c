@@ -151,6 +151,9 @@ static void emit_var_set(char *varname, NodeData *data, NodeType *type) {
 	case NIL_NODE:
 		fprintf(stderr, "Cannot set a variable to NIL.\n");
 		break;
+	case ROOT_NODE:
+		fprintf(stderr, "Cannot set a variable to ROOT\n");
+		break;
 	}
 	fputs(			";Set the value of a variable\n" 
 					"mov %0 R0\n" //Get the number of stacks
@@ -181,7 +184,7 @@ static void go_up_func_stack() {
 			"add R1 =1 R1\n"
 			"sub =1 R0 R0\n"
 			"mov R0 %0\n"
-			"gtb R$1", file);
+			"gtb R$1\n", file);
 }
 
 static void emit_end_fun() {
@@ -207,7 +210,7 @@ static void emit_call_fun(char *name, NodeData *data, NodeType *type, size_t *ar
 			"add =43 R1 R1\n"
 			"mov R1 R$0\n", file);
 	int index = func_table_get_index(ftbl, name);
-	fprintf(file, "brn =%d", func_table_get_label(ftbl, index));
+	fprintf(file, "brn =%d\n", func_table_get_label(ftbl, index));
 	//Set the paramters as variables
 	size_t num_args = *args;
 	char **param_names = func_table_params(ftbl, index);
