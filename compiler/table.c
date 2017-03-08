@@ -8,6 +8,11 @@ Table *table_new(Table *parent) {
 	Table *new = malloc(sizeof(Table));
 	new->parent = parent;
 	new->length = 0;
+	if(parent == NULL) {
+		new->stack_level = 0;
+	} else {
+		new->stack_level = parent->stack_level + 1;
+	}
 	return new;
 }
 void table_add(Table *tbl, char *name) {
@@ -17,15 +22,23 @@ void table_add(Table *tbl, char *name) {
 		fputs("Added too many entries to a single table.", stderr);
 	}
 }
-int table_get(Table *tbl, char *name) {
+
+
+int table_get(Table *tbl, char *name, int *out_stack_level) {
 	for(size_t i = 0; i < tbl->length; i++) {
 		if(strcmp(tbl->names[i], name) == 0) {
+			if(out_stack_level != NULL) {
+				*out_stack_level = tbl->stack_level;
+			}
 			return i;
 		}
 	}
 	if(tbl->parent != NULL) {
-		return table_get(tbl->parent, name);
+		return table_get(tbl->parent, name, out_stack_level);
 	} else {
+		if(out_stack_level != NULL) {
+			*out_stack_level = tbl->stack_level;
+		}
 		return -1;
 	}
 }

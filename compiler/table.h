@@ -10,11 +10,12 @@ struct Table {
 	int values[1024];
 	size_t length;
 	Table *parent;
+	int stack_level;
 };
 
 Table *table_new(Table *parent);
 void table_add(Table *tbl, char *name);
-int table_get(Table *tbl, char *name);
+int table_get(Table *tbl, char *name, int *out_stack_level);
 
 struct FunctionTable;
 typedef struct FunctionTable FunctionTable;

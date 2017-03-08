@@ -12,6 +12,8 @@ FunctionTable *ftbl;
 Stack *labels;
 int label = 1;
 
+static int var_location_in_memory(char *varname);
+static int stack_ptr_location_in_memory(int level);
 static void emit_asm(char *string);
 static void emit_var_new(char *varname);
 static void emit_var_get(char *varname, int *reg);
@@ -29,7 +31,6 @@ static void emit_if_end();
 static void emit_while_start();
 static void emit_while_body_start();
 static void emit_while_end();
-static void go_up_func_stack();
 
 
 void ir_emit(IrNode *root, FILE *output) {
@@ -99,6 +100,22 @@ void ir_emit(IrNode *root, FILE *output) {
 	}
 }
 
+#define STACK_SIZE 1024
+
+static int var_location_in_memory(char *varname) {
+	int stack_level = 0;
+	int offset = table_get(tbl, varname, &stack_level);
+	int var_spot = stack_level 
+		* STACK_SIZE //find the beginning of the correct stack
+		+ 4 //Move past the return location byte 
+		+ (offset * 4); //Move to the correct position within the stack as given by the lookup table
+	return var_spot;
+}
+
+static int stack_ptr_location_in_memory(int level) {
+	return level * 1024;
+}
+
 static void emit_asm(char *string) {
 	fputc('\n', file);
 	fputs(string, file);
@@ -106,47 +123,35 @@ static void emit_asm(char *string) {
 }
 
 static void emit_var_new(char *varname) {
-	fputs(	"; Create a new variable\n"
-			"mov %0 R0\n"
-			"mul R0 =1024\n"
-			"add R0 =5 R0\n"
-			"add R0 R$0 R1\n"
-			"mov R$0 R3\n"
-			"mov R3 R$0\n"
-			"; End variable creation\n", file);
 	table_add(tbl, varname);
 }
 
 static void emit_var_get(char *varname, int *reg) {
-	int offset = table_get(tbl, varname);
 	int register_index = *reg;
-	fputs(			"; Get the value of a variable into a register\n"
-					"mov %0 R0\n"
-					"mul R0 =1024\n"
-					"add R0 =5 R0\n", file);
-	fprintf(file, "add R0 =%d R0\n"
-					"mov R$0 R%d\n", (offset * 4), register_index);
-	fputs(			"; Stop getting the value of a variable\n", file);
+	int var_spot = var_location_in_memory(varname);
+	fprintf(file,	"; Get the value of a variable into a register\n"
+					"mov %%%d R%d\n", var_spot, register_index);
 }
 
 static void emit_var_set(char *varname, NodeData *data, NodeType *type) {
+	int var_location = var_location_in_memory(varname);
+	fputs("; Set the value of a variable \n", file);
 	switch(*type) {
 	case WORD_NODE: {
 		char *word = data->sval;
 		//Setting a variable to a register value
 		if(strlen(word) == 2 && word[0] == 'R' && word[1] >= '0' && word[1] <= '9') {
-			fprintf(file, "mov R%d R1\n", word[1] - '0');
+			fprintf(file, "mov R%d %%%d\n", word[1] - '0', var_location);
 		} else {
-			//Setting a variable to a variable value
-			int reg = 1;
-			emit_var_get(data->sval, &reg);
+			int other_variable_location = var_location_in_memory(word);
+			fprintf(file, "mov %%%d %%%d\n", other_variable_location, var_location);
 		}
 	}	break;
 	case STRING_NODE:
 		fprintf(stderr, "Setting variables to strings is not yet supported.\n");
 		break;
 	case NUMBER_NODE:
-		fprintf(file, "mov =%d R1\n", data->ival);
+		fprintf(file, "mov =%d %%%d\n", data->ival, var_location);
 		break;
 	case NIL_NODE:
 		fprintf(stderr, "Cannot set a variable to NIL.\n");
@@ -155,12 +160,6 @@ static void emit_var_set(char *varname, NodeData *data, NodeType *type) {
 		fprintf(stderr, "Cannot set a variable to ROOT\n");
 		break;
 	}
-	fputs(			";Set the value of a variable\n" 
-					"mov %0 R0\n" //Get the number of stacks
-					"mul R0 =1024\n" //Multiply it by 1024
-					"add R0 =5 R0\n", file); //Move past the initial byte
-	fprintf(file, 	"add R0 =%d R0\n", 4 * table_get(tbl, varname)); //Go the spot of the byte
-	fputs(			"mov R1 R$0\n", file); //Put the value into the memory
 }
 
 static void emit_start_fun(char *name, char **args) {
@@ -171,24 +170,9 @@ static void emit_start_fun(char *name, char **args) {
 	emit_var_new("__return");
 }
 
-static void go_up_func_stack() {
-	//Get the current amount of stacks
-	//Multiply it by the stack size (1024 in decimal, 400 in hex)
-	//Add 1 to it
-	//Subtract one from the amount of stacks
-	//Store it as the number of stacks
-	//Get the byte indicated by the first value in the stack
-	//Jump there
-	fputs(	"mov %0 R0\n"
-			"mul R0 =1024 R1\n"
-			"add R1 =1 R1\n"
-			"sub =1 R0 R0\n"
-			"mov R0 %0\n"
-			"gtb R$1\n", file);
-}
-
 static void emit_end_fun() {
-	go_up_func_stack();
+	int location = stack_ptr_location_in_memory(tbl->stack_level);
+	fprintf(file, "gtb %%%d\n", location);
 	tbl = tbl->parent;
 }
 
@@ -201,14 +185,7 @@ static void emit_call_fun(char *name, NodeData *data, NodeType *type, size_t *ar
 	//Add 36 to the value (24 in hex) to move past the instruction when returning
 	//Move that value into the first byte of the new stack
 	//Jump to the appropriate label for the function
-	fputs(	"; Start calling a function \n"
-			"; Go up the function stack\n"
-			"mov %0 R0\n"
-			"add R0 =1 R0\n"
-			"mov R0 %0\n"
-			"mul R0 =1024 R0\n"
-			"add R0 =1 R0\n"
-			, file);
+	fputs(	"; Start calling a function \n", file);
 	int index = func_table_get_index(ftbl, name);
 	//Set the paramters as variables
 	size_t num_args = *args;
@@ -218,18 +195,17 @@ static void emit_call_fun(char *name, NodeData *data, NodeType *type, size_t *ar
 		emit_var_new(param_names[i]); //Create the variable for the parameter
 		emit_var_set(param_names[i], data + i, type + i); //Set the passed value
 	}
-	fprintf(file, 	"mov %0 R0\n"
-					"mul R0 =1024 R0\n"
-					"add R0 =1 R0\n" 
-					"gcb R1\n"
-					"add =43 R1 R1\n"
-					"mov R1 R$0\n"
-					"brn =%d\n", func_table_get_label(ftbl, index));
+	int location = stack_ptr_location_in_memory(tbl->stack_level);
+	fprintf(file, 	"gcb R0\n"
+					"add =43 R0 R0\n"
+					"mov R0 %%%d\n"
+					"brn =%d\n", location, func_table_get_label(ftbl, index));
 	fputs(	"; Stop calling a function\n", file);
 }
 
 static void emit_return_fun(NodeData *data, NodeType *type) {
-	go_up_func_stack();
+	int location = stack_ptr_location_in_memory(tbl->stack_level);
+	fprintf(file, "gtb %%%d\n", location);
 	emit_var_set("__return", data, type);
 }
 
