@@ -125,7 +125,7 @@ static void emit_var_get(char *varname, int *reg) {
 					"mul R0 =1024\n"
 					"add R0 =5 R0\n", file);
 	fprintf(file, "add R0 =%d R0\n"
-					"mov R$0 R%d\n", offset, register_index);
+					"mov R$0 R%d\n", (offset * 4), register_index);
 	fputs(			"; Stop getting the value of a variable\n", file);
 }
 
@@ -159,7 +159,7 @@ static void emit_var_set(char *varname, NodeData *data, NodeType *type) {
 					"mov %0 R0\n" //Get the number of stacks
 					"mul R0 =1024\n" //Multiply it by 1024
 					"add R0 =5 R0\n", file); //Move past the initial byte
-	fprintf(file, 	"add R0 =%d R0\n", table_get(tbl, varname)); //Go the spot of the byte
+	fprintf(file, 	"add R0 =%d R0\n", 4 * table_get(tbl, varname)); //Go the spot of the byte
 	fputs(			"mov R1 R$0\n", file); //Put the value into the memory
 }
 
@@ -201,23 +201,31 @@ static void emit_call_fun(char *name, NodeData *data, NodeType *type, size_t *ar
 	//Add 36 to the value (24 in hex) to move past the instruction when returning
 	//Move that value into the first byte of the new stack
 	//Jump to the appropriate label for the function
-	fputs(	"mov %0 R0\n"
+	fputs(	"; Start calling a function \n"
+			"; Go up the function stack\n"
+			"mov %0 R0\n"
 			"add R0 =1 R0\n"
 			"mov R0 %0\n"
 			"mul R0 =1024 R0\n"
 			"add R0 =1 R0\n"
-			"gcb R1\n"
-			"add =43 R1 R1\n"
-			"mov R1 R$0\n", file);
+			, file);
 	int index = func_table_get_index(ftbl, name);
-	fprintf(file, "brn =%d\n", func_table_get_label(ftbl, index));
 	//Set the paramters as variables
 	size_t num_args = *args;
 	char **param_names = func_table_params(ftbl, index);
+	fputs(	"; Set the values for the parameters \n", file);
 	for(size_t i = 0; i < num_args; i++) {
 		emit_var_new(param_names[i]); //Create the variable for the parameter
 		emit_var_set(param_names[i], data + i, type + i); //Set the passed value
 	}
+	fprintf(file, 	"mov %0 R0\n"
+					"mul R0 =1024 R0\n"
+					"add R0 =1 R0\n" 
+					"gcb R1\n"
+					"add =43 R1 R1\n"
+					"mov R1 R$0\n"
+					"brn =%d\n", func_table_get_label(ftbl, index));
+	fputs(	"; Stop calling a function\n", file);
 }
 
 static void emit_return_fun(NodeData *data, NodeType *type) {
