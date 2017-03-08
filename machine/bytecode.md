@@ -48,7 +48,7 @@ All indices are in hexidecimal
 Constants can be used in place of source registers, and are denoted with =
 
 ##Pointers
-Pointers are denoted with a hex string with no R or # prefix.
+Pointers are denoted with a decimal string with a % prefix.
 
 ##Registers
 Registers are denoted with an 'R'. The value of a dereferenced register is represented by R$.
