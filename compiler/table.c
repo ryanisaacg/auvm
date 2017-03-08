@@ -24,7 +24,7 @@ int table_get(Table *tbl, char *name) {
 		}
 	}
 	if(tbl->parent != NULL) {
-		return table_get(tbl, name);
+		return table_get(tbl->parent, name);
 	} else {
 		return -1;
 	}
