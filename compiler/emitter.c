@@ -117,7 +117,6 @@ static int stack_ptr_location_in_memory(int level) {
 }
 
 static void emit_asm(char *string) {
-	fputc('\n', file);
 	fputs(string, file);
 	fputc('\n', file);
 }
