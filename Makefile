@@ -8,6 +8,7 @@ run: auvm.out bios
 
 clean:
 	rm -r machine/obj
+	rm -r compiler/obj
 	rm auvm.out
 
 #Compile the bios
