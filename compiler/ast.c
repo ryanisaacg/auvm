@@ -102,12 +102,12 @@ static void node_to_output(Node *root) {
 	char *sval = root->data.sval;
 	switch(root->type) {
 	case WORD_NODE:
-		if(strcmp(sval, "var-new") == 0) {
+		if(strcmp(sval, "new") == 0) {
 			ir_new_var(root->child->data.sval);
 			ir_set_var(root->child->data.sval, root->child->next->data, root->child->next->type);
-		} else if(strcmp(sval, "var-get") == 0) {
+		} else if(strcmp(sval, "get") == 0) {
 			ir_get_var(root->child->data.sval, root->child->next->data.ival);
-		} else if(strcmp(sval, "var-set") == 0) {
+		} else if(strcmp(sval, "set") == 0) {
 			ir_set_var(root->child->data.sval, root->child->next->data, root->child->next->type);
 		} else if(strcmp(sval, "defn") == 0) {
 			Node *name_node = root->child;
