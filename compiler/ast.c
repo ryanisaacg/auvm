@@ -141,25 +141,6 @@ static void node_to_output(Node *root) {
 				body_node = body_node->next;
 			}
 			ir_end_fun();
-		} else if(strcmp(sval, "call") == 0) {
-			NodeData *data = malloc(sizeof(NodeData) * 2);
-			NodeType *type = malloc(sizeof(NodeType) * 2);
-			size_t capacity = 2;
-			size_t length = 0;
-			Node *arg_node = root->child->next;
-			while(arg_node != NULL) {
-				if(length * 2 < capacity) {
-					data[length] = arg_node->data;
-					type[length] = arg_node->type;
-					length++;
-					arg_node = arg_node->next;
-				} else {
-					capacity *= 2;
-					data = realloc(data, sizeof(NodeData) * capacity);
-					type = realloc(type, sizeof(NodeType) * capacity);
-				}
-			}
-			ir_call_fun(root->child->data.sval, data, type, length);
 		} else if(strcmp(sval, "if") == 0) {
 			//Get the value of the variable being checked against
 			ir_get_var(root->child->data.sval, 0);
@@ -192,6 +173,25 @@ static void node_to_output(Node *root) {
 			ir_inline("=0 ");
 		} else if(strcmp(sval, "return") == 0) {
 			ir_return_fun(root->data, root->type);
+		} else {
+			NodeData *data = malloc(sizeof(NodeData) * 2);
+			NodeType *type = malloc(sizeof(NodeType) * 2);
+			size_t capacity = 2;
+			size_t length = 0;
+			Node *arg_node = root->child;
+			while(arg_node != NULL) {
+				if(length * 2 < capacity) {
+					data[length] = arg_node->data;
+					type[length] = arg_node->type;
+					length++;
+					arg_node = arg_node->next;
+				} else {
+					capacity *= 2;
+					data = realloc(data, sizeof(NodeData) * capacity);
+					type = realloc(type, sizeof(NodeType) * capacity);
+				}
+			}
+			ir_call_fun(root->data.sval, data, type, length);
 		}
 		break;
 	case ROOT_NODE:

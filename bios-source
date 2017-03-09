@@ -12,5 +12,5 @@
 	(new a R0)
 	(asm "rfi R0")
 	(new b R0)
-	(call add a b)
-	(call print R3))
+	(add a b)
+	(print R3))
