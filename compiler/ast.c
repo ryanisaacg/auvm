@@ -156,7 +156,7 @@ static void node_to_output(Node *root) {
 				} else {
 					capacity *= 2;
 					data = realloc(data, sizeof(NodeData) * capacity);
-					type = realloc(data, sizeof(NodeType) * capacity);
+					type = realloc(type, sizeof(NodeType) * capacity);
 				}
 			}
 			ir_call_fun(root->child->data.sval, data, type, length);
