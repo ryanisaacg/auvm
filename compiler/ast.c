@@ -190,6 +190,8 @@ static void node_to_output(Node *root) {
 			ir_inline("=1 ");
 		} else if(strcmp(sval, "false") == 0) {
 			ir_inline("=0 ");
+		} else if(strcmp(sval, "return") == 0) {
+			ir_return_fun(root->data, root->type);
 		}
 		break;
 	case ROOT_NODE:
