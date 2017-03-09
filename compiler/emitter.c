@@ -170,7 +170,7 @@ static void emit_start_fun(char *name, char **args) {
 }
 
 static void emit_end_fun() {
-	int location = stack_ptr_location_in_memory(tbl->stack_level);
+	int location = stack_ptr_location_in_memory(tbl->stack_level - 1);
 	fprintf(file, "gtb %%%d\n", location);
 	tbl = tbl->parent;
 }
@@ -203,7 +203,7 @@ static void emit_call_fun(char *name, NodeData *data, NodeType *type, size_t *ar
 }
 
 static void emit_return_fun(NodeData *data, NodeType *type) {
-	int location = stack_ptr_location_in_memory(tbl->stack_level);
+	int location = stack_ptr_location_in_memory(tbl->stack_level - 1);
 	fprintf(file, "gtb %%%d\n", location);
 	emit_var_set("__return", data, type);
 }
