@@ -8,5 +8,9 @@
 	(asm "add R0 R1 R3")
 	(return R0))
 (main
-	(call add 65 3)
+	(asm "rfi R0")
+	(var-set a R0)
+	(asm "rfi R0")
+	(var-set b R0)
+	(call add a b)
 	(call print R3))
