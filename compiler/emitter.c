@@ -213,7 +213,7 @@ static void emit_start_main() {
 }
 
 static void emit_end_main() {
-	fputs("exit\n", file);
+	fputs("end\n", file);
 }
 
 //TODO: Actual handling of expressions in ifs
