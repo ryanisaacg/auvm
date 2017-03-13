@@ -104,7 +104,14 @@ static void node_to_output(Node *root) {
 	case WORD_NODE:
 		if(strcmp(sval, "new") == 0) {
 			ir_new_var(root->child->data.sval);
-			ir_set_var(root->child->data.sval, root->child->next->data, root->child->next->type);
+			if(root->child != NULL) {
+				if(root->child->next->child != NULL) {
+					node_to_output(root->child->next);
+					ir_set_var(root->child->data.sval, (NodeData) { .sval = "R1" }, WORD_NODE);
+				} else {
+					ir_set_var(root->child->data.sval, root->child->next->data, root->child->next->type);
+				}
+			}
 		} else if(strcmp(sval, "get") == 0) {
 			ir_get_var(root->child->data.sval, root->child->next->data.ival);
 		} else if(strcmp(sval, "set") == 0) {
@@ -172,7 +179,7 @@ static void node_to_output(Node *root) {
 		} else if(strcmp(sval, "false") == 0) {
 			ir_inline("=0 ");
 		} else if(strcmp(sval, "return") == 0) {
-			ir_return_fun(root->data, root->type);
+			ir_return_fun(root->child->data, root->child->type);
 		} else {
 			NodeData *data = malloc(sizeof(NodeData) * 2);
 			NodeType *type = malloc(sizeof(NodeType) * 2);
