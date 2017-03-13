@@ -39,6 +39,7 @@ void ir_emit(IrNode *root, FILE *output) {
 	ftbl = func_table_new();
 	labels = malloc(sizeof(Stack));
 	*labels = stack_new();
+	emit_var_new("__return");
 	fputs("brn =0\n", output); //jump to the main
 	while(root != NULL) {
 		switch(root->type) {
@@ -164,6 +165,10 @@ static void emit_var_set(char *varname, NodeData *data, NodeType *type) {
 static void emit_start_fun(char *name, char **args) {
 	func_table_add(ftbl, name, args, label);
 	fprintf(file, "lbl =%d \n; start function %s\n", label, name);
+	while(*args != NULL) {
+		table_add(tbl, *args);
+		args++;
+	}
 	label++;
 	tbl = table_new(tbl);
 	emit_var_new("__return");
@@ -204,8 +209,10 @@ static void emit_call_fun(char *name, NodeData *data, NodeType *type, size_t *ar
 
 static void emit_return_fun(NodeData *data, NodeType *type) {
 	int location = stack_ptr_location_in_memory(tbl->stack_level - 1);
-	fprintf(file, "gtb %%%d\n", location);
 	emit_var_set("__return", data, type);
+	int reg = 1;
+	emit_var_get("__return", &reg);
+	fprintf(file, "gtb %%%d\n", location);
 }
 
 static void emit_start_main() {
