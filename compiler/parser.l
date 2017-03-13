@@ -14,12 +14,11 @@ char *dupstring(char *text) {
 %}
 
 %%
-
+;.*\n						{ } //comments					{ } //block comments
 \".+\"						{ yylval.sval = dupstring(yytext); return STRING; } //string literal
 [A-za-z][A-Za-z\-0-9_]* 	{ yylval.sval = dupstring(yytext); return WORD; } //word token
 [0-9]+ 						{ yylval.ival = atoi(yytext); return NUMBER; } //numbers
 \(|\)	 					{ return yytext[0]; } //parens
-;.*\n						{ } //comments
 [ \t\n]+					{ } //whitespace
 
 %%
