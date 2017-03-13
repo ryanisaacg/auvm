@@ -1,15 +1,17 @@
 CFLAGS= -Wall -Wextra -Werror -Wfatal-errors -Iinclude -g -std=c99
 
-all: auvm.out translator.out lc.out asm.out dasm.out
+all: auvm.out translator.out lc.out asm.out dasm.out bios bios-dasm
 
-run: auvm.out bios
-	./dasm.out bios bios-dasm
+run: all
 	./auvm.out
 
 clean:
 	rm -r machine/obj
 	rm -r compiler/obj
 	rm auvm.out
+	rm lc.out
+	rm asm.out
+	rm dasm.out	
 
 #Compile the bios
 bios-asm: bios-source lc.out
