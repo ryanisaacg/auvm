@@ -55,7 +55,9 @@ int get_value(char *input) {
 		return END;
 	} else if(strcmp(input, "LBL") == 0) {
 		return LBL;
-	} 
+	} else if(strcmp(input, "DBG") == 0) {
+		return DBG;
+	}
 }
 
 int get_condition(char *string) {

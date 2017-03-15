@@ -139,6 +139,9 @@ char *command_to_string(ubyte command) {
 	case LBL:
 		return "LBL";
 		break;
+	case DBG:
+		return "DBG";
+		break;
 	}
 	return "ERROR";
 }

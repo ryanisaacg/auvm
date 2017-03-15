@@ -44,6 +44,8 @@ All indices are in hexidecimal
 	- whd R(SourceIndex) (DiskLocation)
 - lbl: Defines a label (converted to index at assemble-time)
 	- lbl "(String)"
+- dbg: Print debug information (prints registers and dumps the RAM to an output file)
+	- dbg
 ##Constants
 Constants can be used in place of source registers, and are denoted with =
 

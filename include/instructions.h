@@ -8,7 +8,7 @@ typedef char byte;
 typedef int32_t number;
 
 enum Instruction {
-	MOV, ADD, SUB, MUL, DIV, MOD, RFI, WTO, CMP, BRN, GTB, GCB, PFS, POP, AND, IOR, XOR, RHD, WHD, END, LBL
+	MOV, ADD, SUB, MUL, DIV, MOD, RFI, WTO, CMP, BRN, GTB, GCB, PFS, POP, AND, IOR, XOR, RHD, WHD, END, LBL, DBG
 };
 
 typedef enum Instruction Instruction;

@@ -195,5 +195,13 @@ void execute_statement(size_t start, size_t position, size_t *new_position, bool
 		} break;
 		case LBL: {
 		} break;
+		case DBG: {
+			printf("-- MACHINE DEBUG OUTPUT --\n");
+			for(int i = 0; i <= 9; i++) {
+				printf("Register %d = %d\n", i, registers[i]);
+			}
+			printf("RAM dump not yet implemented\n");
+			printf("-- END MACHINE DEBUG OUTPUT --\n");
+		}
 	}
 }
