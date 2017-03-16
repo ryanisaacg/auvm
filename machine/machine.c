@@ -200,7 +200,16 @@ void execute_statement(size_t start, size_t position, size_t *new_position, bool
 			for(int i = 0; i <= 9; i++) {
 				printf("Register %d = %d\n", i, registers[i]);
 			}
-			printf("RAM dump not yet implemented\n");
+			char *dumpname = malloc(6);
+			dumpname[0] = '\0';
+			strcat(dumpname, " .dump");
+			dumpname[0] = dump;
+			dump++;
+			FILE* dumpfile = fopen(dumpname, "w");
+			fwrite(ram, sizeof(number), RAM_SIZE / sizeof(number), dumpfile);
+			fputc(EOF, dumpfile);
+			fclose(dumpfile);
+			printf("RAM dumped to %s\n", dumpname);
 			printf("-- END MACHINE DEBUG OUTPUT --\n");
 		}
 	}

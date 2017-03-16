@@ -10,3 +10,4 @@ lex.c
 *.tab.*
 asmlex.c
 lc.out
+*.dump

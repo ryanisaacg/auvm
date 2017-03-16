@@ -14,3 +14,4 @@ ubyte *ram, *disk_buffer, *bios;
 size_t disk_size, bios_size;
 number registers[8];
 number register_compare;
+char dump = 'A';
