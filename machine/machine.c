@@ -206,7 +206,7 @@ void execute_statement(size_t start, size_t position, size_t *new_position, bool
 			dumpname[0] = dump;
 			dump++;
 			FILE* dumpfile = fopen(dumpname, "w");
-			fwrite(ram, sizeof(number), RAM_SIZE / sizeof(number), dumpfile);
+			fwrite(ram, 1, RAM_SIZE, dumpfile);
 			fputc(EOF, dumpfile);
 			fclose(dumpfile);
 			printf("RAM dumped to %s\n", dumpname);
