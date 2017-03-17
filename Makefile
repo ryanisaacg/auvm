@@ -1,6 +1,6 @@
 CFLAGS= -Wall -Wextra -Werror -Wfatal-errors -Iinclude -g -std=c99
 
-all: auvm.out translator.out lc.out asm.out dasm.out bios bios-dasm
+all: auvm.out translator.out lc.out asm.out dasm.out bstream.out bios bios-dasm 
 
 run: all
 	./auvm.out
@@ -67,3 +67,6 @@ machine/obj/io.o: machine/io.c machine/io.h machine/obj
 machine/obj:
 	mkdir machine/obj
 
+#Compile the binary stream tool
+bstream.out: binstream/binstream.c
+	gcc binstream/binstream.c $(CFLAGS) -o bstream.out
