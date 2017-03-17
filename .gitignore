@@ -11,3 +11,4 @@ lex.c
 asmlex.c
 lc.out
 *.dump
+*.out
