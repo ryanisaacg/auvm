@@ -3,7 +3,6 @@ asm.*
 dasm.*
 */obj/*
 bios
-bios-asm
 bios-dasm
 translator.out
 lex.c

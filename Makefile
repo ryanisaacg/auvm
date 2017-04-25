@@ -7,12 +7,10 @@ run: auvm.out bios
 	./auvm.out
 
 clean:
-	rm -r machine/obj
+	rm machine/obj/*
 	rm auvm.out
 
 #Compile the bios
-bios-asm: bios-source lc.out
-	./lc.out bios-source bios-asm
 bios: bios-asm asm.out
 	./asm.out bios-asm bios
 #Disassemble the bios to examine if it has been assembled correctly
@@ -30,18 +28,6 @@ dasm.out: include/instructions.h assembler/disassembler.c
 #Compile the translator tool
 translator.out: tools/translator.c
 	gcc tools/translator.c $(CFLAGS) -o translator.out
-
-#Compile the LISP Compiler
-compiler/obj:
-	mkdir compiler/obj
-compiler/obj/ast.o: compiler/obj compiler/ast.h compiler/ast.c
-	gcc compiler/ast.c $(CFLAGS) -c -o compiler/obj/ast.o
-compiler/obj/table.o: compiler/obj compiler/table.h compiler/table.c
-	gcc compiler/table.c $(CFLAGS) -c -o compiler/obj/table.o
-lc.out: compiler/parser.l compiler/parser.y compiler/obj/ast.o compiler/obj/table.o
-	flex -olex.c compiler/parser.l
-	bison -d -byacc compiler/parser.y
-	gcc -Icompiler lex.c yacc.tab.c  -Wno-implicit-function-declaration compiler/obj/table.o compiler/obj/ast.o -std=c99 -o lc.out
 
 # Compile the VM
 auvm.out: machine/obj/io.o machine/obj/machine.o

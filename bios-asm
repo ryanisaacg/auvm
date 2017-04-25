@@ -1,0 +1,14 @@
+mov =0 R0
+mov =0 R1
+mov =1 R2
+lbl =0
+add =48 R2 R3
+wto R3
+add R1 R2 R4
+mov R2 R1
+mov R4 R2
+add =1 R0 R0
+cmp R0 =5
+brnng =0
+wto =10
+end
